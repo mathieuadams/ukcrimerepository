@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time UK crime data mapping. Find crime statistics, safety information, and trends by location across England, Wales, and Northern Ireland.">
+    <title><%= title %></title>
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Content same as before but with EJS syntax -->
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="loading-text">Loading CrimeSpotter UK</div>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="nav">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </div>
+                <nav class="nav-links">
+                    <a href="#map" class="nav-link active">Map</a>
+                    <a href="#stats" class="nav-link">Statistics</a>
+                    <a href="#about" class="nav-link">About</a>
+                </nav>
+                <div class="header-actions">
+                    <button class="btn-secondary" id="share-btn">
+                        <i class="fas fa-share-alt"></i>
+                        Share
+                    </button>
+                </div>
+                <div class="mobile-menu-btn" id="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Live UK Crime Data
+                    <span class="gradient-text">at Your Fingertips</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Explore real-time crime statistics, safety trends, and neighborhood insights across England, Wales, and Northern Ireland
+                </p>
+                
+                <!-- Search Bar -->
+                <div class="search-section">
+                    <div class="search-bar">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-map-marker-alt search-icon"></i>
+                            <input type="text" 
+                                   id="location-search" 
+                                   placeholder="Enter postcode, city, or address..." 
+                                   class="search-input"
+                                   autocomplete="off">
+                            <div class="search-suggestions" id="search-suggestions"></div>
+                        </div>
+                        <button class="search-btn" id="search-btn">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Quick Location Buttons -->
+                    <div class="quick-locations">
+                        <span class="quick-label">Popular locations:</span>
+                        <div class="quick-buttons">
+                            <button class="quick-btn" data-coords="51.5074,-0.1278" data-name="London">
+                                <i class="fas fa-building"></i> London
+                            </button>
+                            <button class="quick-btn" data-coords="53.4808,-2.2426" data-name="Manchester">
+                                <i class="fas fa-industry"></i> Manchester
+                            </button>
+                            <button class="quick-btn" data-coords="52.4862,-1.8904" data-name="Birmingham">
+                                <i class="fas fa-city"></i> Birmingham
+                            </button>
+                            <button class="quick-btn" data-coords="53.8008,-1.5491" data-name="Leeds">
+                                <i class="fas fa-university"></i> Leeds
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Stats -->
+        <div class="floating-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="total-crimes">Loading...</div>
+                <div class="stat-label">Crimes This Month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="latest-update"><%= recentDate %></div>
+                <div class="stat-label">Latest Data</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AdSense Banner -->
+    <section class="ad-section">
+        <div class="container">
+            <div class="ad-container ad-banner">
+                <div class="ad-placeholder">
+                    <div class="ad-label">Advertisement</div>
+                    <div class="ad-content">
+                        <!-- AdSense Responsive Banner -->
+                        <div style="width: 728px; height: 90px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; border-radius: 8px;">
+                            728 x 90 Banner Ad Space
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Map Section -->
+    <main class="main-content">
+        <section class="map-section" id="map">
+            <div class="map-wrapper">
+                <!-- Map Controls -->
+                <div class="map-controls" id="map-controls">
+                    <div class="controls-header">
+                        <h3><i class="fas fa-sliders-h"></i> Filters & Controls</h3>
+                        <button class="controls-toggle" id="controls-toggle">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Location Info -->
+                    <div class="control-section">
+                        <div class="location-info" id="location-info">
+                            <div class="location-name">Select a location</div>
+                            <div class="location-coords"></div>
+                        </div>
+                    </div>
+
+                    <!-- Date Selector -->
+                    <div class="control-section">
+                        <label class="control-label">
+                            <i class="fas fa-calendar-alt"></i> Time Period
+                        </label>
+                        <select class="control-select" id="date-selector">
+                            <option value="<%= recentDate %>"><%= recentDate %> (Latest)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Crime Type Filters -->
+                    <div class="control-section">
+                        <label class="control-label">
+                            <i class="fas fa-filter"></i> Crime Types
+                        </label>
+                        <div class="filter-group" id="crime-filters">
+                            <label class="filter-item">
+                                <input type="checkbox" value="all" checked>
+                                <span class="checkmark"></span>
+                                <span class="filter-text">All Crimes</span>
+                                <span class="filter-count" id="count-all">0</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Panel -->
+                    <div class="control-section">
+                        <div class="stats-panel">
+                            <h4><i class="fas fa-chart-bar"></i> Area Statistics</h4>
+                            <div class="stat-row">
+                                <span>Total Crimes:</span>
+                                <span id="area-total">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Most Common:</span>
+                                <span id="area-common">-</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Safety Score:</span>
+                                <span id="area-safety" class="safety-score">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Map Container -->
+                <div class="map-container">
+                    <div id="crime-map" class="crime-map"></div>
+                    
+                    <!-- Map Loading Overlay -->
+                    <div class="map-loading" id="map-loading" style="display: none;">
+                        <div class="loading-spinner-map"></div>
+                        <div class="loading-text">Loading crime data...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>CrimeSpotter UK</span>
+                    </div>
+                    <p>Providing transparent access to UK crime data for safer communities.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Data Sources</h4>
+                    <ul>
+                        <li><a href="https://data.police.uk" target="_blank">UK Police Data</a></li>
+                        <li><a href="#about">About Our Data</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. Data provided under Open Government Licence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    
+    <!-- Global configuration -->
+    <script>
+        window.CRIMESPOTTER_CONFIG = {
+            apiBaseUrl: '/api',
+            defaultDate: '<%= recentDate %>',
+            mapCenter: [54.5, -2.0],
+            mapZoom: 6
+        };
+    </script>
+    
+    <script src="/js/map.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
