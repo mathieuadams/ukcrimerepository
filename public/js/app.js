@@ -41,6 +41,9 @@ class CrimeSpotterApp {
             // Setup header scroll effect
             this.setupHeaderEffects();
             
+            // Handle URL parameters if any
+            this.handleUrlParameters();
+            
             this.isInitialized = true;
             console.log('✅ CrimeSpotter UK initialized successfully');
             
@@ -59,7 +62,28 @@ class CrimeSpotterApp {
         }
 
         this.crimeMap = new CrimeMap(window.CRIMESPOTTER_CONFIG);
+        
+        // Listen for crime data updates
+        this.crimeMap.onDataLoaded = (data) => {
+            this.updateCrimeStatistics(data);
+        };
+        
         console.log('🗺️ Map initialized');
+    }
+
+    /**
+     * Update crime statistics in the hero section
+     */
+    updateCrimeStatistics(data) {
+        const totalCrimesElement = document.getElementById('total-crimes');
+        
+        if (totalCrimesElement) {
+            if (data && data.count !== undefined) {
+                totalCrimesElement.textContent = data.count.toLocaleString();
+            } else {
+                totalCrimesElement.textContent = '0';
+            }
+        }
     }
 
     /**
@@ -81,7 +105,7 @@ class CrimeSpotterApp {
         // Navigation
         this.setupNavigation();
         
-        console.log('📡 Event listeners setup complete');
+        console.log('🔡 Event listeners setup complete');
     }
 
     /**
@@ -116,7 +140,7 @@ class CrimeSpotterApp {
 
             // Hide suggestions when clicking outside
             document.addEventListener('click', (e) => {
-                if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                if (!searchInput.contains(e.target) && !suggestionsContainer?.contains(e.target)) {
                     this.hideSuggestions();
                 }
             });
@@ -179,36 +203,12 @@ class CrimeSpotterApp {
     }
 
     /**
-     * Setup smooth navigation
+     * Setup navigation
      */
     setupNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                
-                if (href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href.substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    
-                    if (targetElement) {
-                        const headerHeight = document.querySelector('.header').offsetHeight;
-                        const targetPosition = targetElement.offsetTop - headerHeight;
-                        
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
-                    
-                    // Update active nav link
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                }
-            });
-        });
+        // Navigation links now use actual routes, no smooth scrolling needed
+        // Active state is handled by the server/page load
+        console.log('Navigation setup complete');
     }
 
     /**
@@ -259,7 +259,7 @@ class CrimeSpotterApp {
         const dateSelector = document.getElementById('date-selector');
         
         if (dateSelector && dates.length > 0) {
-            // Clear existing options except the first (latest)
+            // Clear existing options
             dateSelector.innerHTML = '';
             
             dates.forEach((dateObj, index) => {
@@ -268,6 +268,13 @@ class CrimeSpotterApp {
                 option.textContent = `${dateObj.date}${index === 0 ? ' (Latest)' : ''}`;
                 dateSelector.appendChild(option);
             });
+            
+            // Add change event listener
+            dateSelector.addEventListener('change', (e) => {
+                if (this.crimeMap) {
+                    this.crimeMap.loadCrimesForCurrentView(e.target.value);
+                }
+            });
         }
     }
 
@@ -275,12 +282,26 @@ class CrimeSpotterApp {
      * Load initial data for the default location
      */
     async loadInitialData() {
-        // Load crimes for London by default
-        const [lat, lng] = window.CRIMESPOTTER_CONFIG.mapCenter;
+        // Set initial loading state
+        const totalCrimesElement = document.getElementById('total-crimes');
+        if (totalCrimesElement) {
+            totalCrimesElement.textContent = 'Loading...';
+        }
         
+        // Load crimes for London by default
         if (this.crimeMap) {
-            await this.crimeMap.loadCrimes(51.5074, -0.1278); // London coordinates
+            const data = await this.crimeMap.loadCrimes(51.5074, -0.1278); // London coordinates
             this.updateLocationInfo('London', 51.5074, -0.1278);
+            
+            // Update the initial statistics
+            if (data) {
+                this.updateCrimeStatistics(data);
+            } else {
+                // If no data, set to 0
+                if (totalCrimesElement) {
+                    totalCrimesElement.textContent = '0';
+                }
+            }
         }
     }
 
@@ -518,8 +539,9 @@ class CrimeSpotterApp {
      */
     showError(message) {
         console.error('Error:', message);
-        // You could implement a toast notification system here
-        alert(`Error: ${message}`);
+        
+        // Create toast notification
+        this.showToast(message, 'error');
     }
 
     /**
@@ -527,8 +549,52 @@ class CrimeSpotterApp {
      */
     showSuccess(message) {
         console.log('Success:', message);
-        // You could implement a toast notification system here
-        alert(message);
+        
+        // Create toast notification
+        this.showToast(message, 'success');
+    }
+    
+    /**
+     * Show toast notification
+     */
+    showToast(message, type = 'info') {
+        // Create toast element if it doesn't exist
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 10000;
+            `;
+            document.body.appendChild(toastContainer);
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.style.cssText = `
+            background: ${type === 'error' ? '#dc2626' : type === 'success' ? '#10b981' : '#3b82f6'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease;
+            min-width: 250px;
+        `;
+        toast.textContent = message;
+        
+        toastContainer.appendChild(toast);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
     }
 
     /**
@@ -549,6 +615,33 @@ class CrimeSpotterApp {
         }
     }
 }
+
+// Add animations CSS
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
 
 // Initialize the application
 new CrimeSpotterApp();

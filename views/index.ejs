@@ -25,7 +25,6 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <!-- Content same as before but with EJS syntax -->
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-content">
@@ -46,9 +45,9 @@
                     <span>CrimeSpotter UK</span>
                 </div>
                 <nav class="nav-links">
-                    <a href="#map" class="nav-link active">Map</a>
-                    <a href="#stats" class="nav-link">Statistics</a>
-                    <a href="#about" class="nav-link">About</a>
+                    <a href="/" class="nav-link active">Map</a>
+                    <a href="/statistics" class="nav-link">Statistics</a>
+                    <a href="/about" class="nav-link">About</a>
                 </nav>
                 <div class="header-actions">
                     <button class="btn-secondary" id="share-btn">
@@ -240,10 +239,19 @@
                 </div>
                 
                 <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Map</a></li>
+                        <li><a href="/statistics">Statistics</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
                     <h4>Data Sources</h4>
                     <ul>
                         <li><a href="https://data.police.uk" target="_blank">UK Police Data</a></li>
-                        <li><a href="#about">About Our Data</a></li>
+                        <li><a href="/about">About Our Data</a></li>
                     </ul>
                 </div>
                 
