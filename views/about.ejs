@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .about-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        .about-section {
+            margin: 3rem 0;
+        }
+        .about-section h2 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        .about-section p {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .feature-item {
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link">Map</a></li>
+                    <li><a href="/statistics" class="nav-link">Statistics</a></li>
+                    <li><a href="/about" class="nav-link active">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- About Hero -->
+    <section class="about-hero">
+        <h1>About CrimeSpotter UK</h1>
+        <p>Making UK crime data accessible and understandable for everyone</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="about-container">
+        <section class="about-section">
+            <h2>Our Mission</h2>
+            <p>
+                CrimeSpotter UK is dedicated to providing transparent, accessible, and easy-to-understand crime data 
+                for communities across the United Kingdom. We believe that informed citizens make safer communities, 
+                and access to crime statistics is a fundamental right.
+            </p>
+            <p>
+                By visualizing official police data on interactive maps and providing detailed analytics, we empower 
+                residents, businesses, and local authorities to make informed decisions about safety and security.
+            </p>
+        </section>
+
+        <section class="about-section">
+            <h2>Data Source & Accuracy</h2>
+            <p>
+                All crime data displayed on CrimeSpotter UK comes directly from the official UK Police API, which 
+                aggregates reported crimes from all 43 police forces across England, Wales, and Northern Ireland.
+            </p>
+            <p>
+                The data is updated monthly, typically with a 2-month delay to allow for verification and processing. 
+                For example, data for June would typically be available in August. We refresh our database as soon as 
+                new data becomes available.
+            </p>
+        </section>
+
+        <section class="about-section">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3>Interactive Maps</h3>
+                    <p>Explore crime data with our intuitive map interface</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
+                    <h3>Real-time Updates</h3>
+                    <p>Monthly data refreshes from official sources</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-filter"></i></div>
+                    <h3>Advanced Filtering</h3>
+                    <p>Filter by crime type, date, and location</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
+                    <h3>Detailed Analytics</h3>
+                    <p>Comprehensive statistics and trend analysis</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Access crime data on any device</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                    <h3>Privacy Focused</h3>
+                    <p>No personal data collection or tracking</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <h2>Privacy & Security</h2>
+            <p>
+                We take your privacy seriously. CrimeSpotter UK does not collect, store, or share any personal 
+                information. We don't use cookies for tracking, and all map searches are processed anonymously.
+            </p>
+            <p>
+                The crime data we display is already anonymized by the UK Police before publication. Exact locations 
+                are approximated to protect the privacy of victims and maintain the integrity of ongoing investigations.
+            </p>
+        </section>
+
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
