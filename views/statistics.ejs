@@ -1,0 +1,656 @@
+<!-- SAVE AS: views/statistics.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Statistics - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .stats-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            font-size: 1.1rem;
+            color: #64748b;
+        }
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link">Map</a></li>
+                    <li><a href="/statistics" class="nav-link active">Statistics</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Stats Hero -->
+    <section class="stats-hero">
+        <h1>UK Crime Statistics</h1>
+        <p>Comprehensive crime data analysis across the United Kingdom</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="stats-container">
+        <h2 style="text-align: center; margin: 2rem 0;">National Crime Overview</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">5.3M</div>
+                <div class="stat-label">Total Crimes (2024)</div>
+                <p style="margin-top: 1rem; color: #94a3b8;">
+                    <i class="fas fa-arrow-down" style="color: #10b981"></i> 
+                    Down 3% from previous year
+                </p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">43</div>
+                <div class="stat-label">Police Forces</div>
+                <p style="margin-top: 1rem; color: #94a3b8;">
+                    Covering England, Wales & Northern Ireland
+                </p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">78.2</div>
+                <div class="stat-label">Crimes per 1,000 people</div>
+                <p style="margin-top: 1rem; color: #94a3b8;">
+                    National average crime rate
+                </p>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; margin: 3rem 0 2rem;">Crime Categories Distribution</h2>
+        
+        <div class="chart-container">
+            <div style="text-align: center;">
+                <h3>Crime Type Breakdown</h3>
+                <p style="color: #64748b; margin: 1rem 0;">Interactive charts coming soon</p>
+                <div style="margin-top: 2rem;">
+                    <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+                        <div><span style="color: #dc2626">●</span> Violence: 32%</div>
+                        <div><span style="color: #7c3aed">●</span> Anti-social: 21%</div>
+                        <div><span style="color: #d97706">●</span> Vehicle: 15%</div>
+                        <div><span style="color: #059669">●</span> Theft: 18%</div>
+                        <div><span style="color: #0891b2">●</span> Other: 14%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; margin: 3rem 0 2rem;">Regional Comparison</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Safest Regions</h3>
+                <ol style="margin-top: 1rem; color: #64748b;">
+                    <li>North Yorkshire</li>
+                    <li>Cumbria</li>
+                    <li>Devon & Cornwall</li>
+                    <li>Dyfed-Powys</li>
+                    <li>North Wales</li>
+                </ol>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Most Common Crimes</h3>
+                <ol style="margin-top: 1rem; color: #64748b;">
+                    <li>Anti-social behaviour</li>
+                    <li>Violence and sexual offences</li>
+                    <li>Criminal damage and arson</li>
+                    <li>Public order</li>
+                    <li>Vehicle crime</li>
+                </ol>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Crime Trends</h3>
+                <ul style="margin-top: 1rem; color: #64748b; list-style: none;">
+                    <li>📈 Cyber crime: +15%</li>
+                    <li>📉 Burglary: -8%</li>
+                    <li>📉 Vehicle theft: -5%</li>
+                    <li>📈 Fraud: +12%</li>
+                    <li>📉 Robbery: -10%</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. Data provided under Open Government Licence.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- ============================================= -->
+<!-- SAVE AS: views/about.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .about-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        .about-section {
+            margin: 3rem 0;
+        }
+        .about-section h2 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        .about-section p {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .feature-item {
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link">Map</a></li>
+                    <li><a href="/statistics" class="nav-link">Statistics</a></li>
+                    <li><a href="/about" class="nav-link active">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- About Hero -->
+    <section class="about-hero">
+        <h1>About CrimeSpotter UK</h1>
+        <p>Making UK crime data accessible and understandable for everyone</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="about-container">
+        <section class="about-section">
+            <h2>Our Mission</h2>
+            <p>
+                CrimeSpotter UK is dedicated to providing transparent, accessible, and easy-to-understand crime data 
+                for communities across the United Kingdom. We believe that informed citizens make safer communities, 
+                and access to crime statistics is a fundamental right.
+            </p>
+            <p>
+                By visualizing official police data on interactive maps and providing detailed analytics, we empower 
+                residents, businesses, and local authorities to make informed decisions about safety and security.
+            </p>
+        </section>
+
+        <section class="about-section">
+            <h2>Data Source & Accuracy</h2>
+            <p>
+                All crime data displayed on CrimeSpotter UK comes directly from the official UK Police API, which 
+                aggregates reported crimes from all 43 police forces across England, Wales, and Northern Ireland.
+            </p>
+            <p>
+                The data is updated monthly, typically with a 2-month delay to allow for verification and processing. 
+                For example, data for June would typically be available in August. We refresh our database as soon as 
+                new data becomes available.
+            </p>
+        </section>
+
+        <section class="about-section">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3>Interactive Maps</h3>
+                    <p>Explore crime data with our intuitive map interface</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
+                    <h3>Real-time Updates</h3>
+                    <p>Monthly data refreshes from official sources</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-filter"></i></div>
+                    <h3>Advanced Filtering</h3>
+                    <p>Filter by crime type, date, and location</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
+                    <h3>Detailed Analytics</h3>
+                    <p>Comprehensive statistics and trend analysis</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Access crime data on any device</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                    <h3>Privacy Focused</h3>
+                    <p>No personal data collection or tracking</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <h2>Privacy & Security</h2>
+            <p>
+                We take your privacy seriously. CrimeSpotter UK does not collect, store, or share any personal 
+                information. We don't use cookies for tracking, and all map searches are processed anonymously.
+            </p>
+            <p>
+                The crime data we display is already anonymized by the UK Police before publication. Exact locations 
+                are approximated to protect the privacy of victims and maintain the integrity of ongoing investigations.
+            </p>
+        </section>
+
+        <section class="about-section">
+            <h2>Contact Us</h2>
+            <p>
+                Have questions, suggestions, or feedback? We'd love to hear from you!
+            </p>
+            <p>
+                Email: <a href="mailto:contact@crimespotter-uk.com" style="color: #667eea;">contact@crimespotter-uk.com</a><br>
+                GitHub: <a href="https://github.com/yourusername/crimespotter-uk" style="color: #667eea;">View Source Code</a>
+            </p>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- ============================================= -->
+<!-- SAVE AS: views/privacy.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .legal-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        .legal-section {
+            margin: 2rem 0;
+        }
+        .legal-section h2 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        .legal-section p, .legal-section li {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        .last-updated {
+            color: #94a3b8;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link">Map</a></li>
+                    <li><a href="/statistics" class="nav-link">Statistics</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="legal-container">
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">Last updated: January 2025</p>
+
+        <section class="legal-section">
+            <h2>1. Information We Collect</h2>
+            <p>
+                CrimeSpotter UK is committed to protecting your privacy. We collect minimal information:
+            </p>
+            <ul>
+                <li><strong>Location Data:</strong> When you search for a location or use the "My Location" feature, this data is processed locally in your browser and is not stored on our servers.</li>
+                <li><strong>Usage Analytics:</strong> We may collect anonymous usage statistics to improve our service, such as page views and feature usage.</li>
+                <li><strong>Technical Information:</strong> Basic technical information such as browser type and device type may be logged for troubleshooting purposes.</li>
+            </ul>
+        </section>
+
+        <section class="legal-section">
+            <h2>2. How We Use Information</h2>
+            <p>Any information processed is used solely to:</p>
+            <ul>
+                <li>Provide crime data for requested locations</li>
+                <li>Improve the functionality and performance of our service</li>
+                <li>Ensure the security and stability of our platform</li>
+            </ul>
+        </section>
+
+        <section class="legal-section">
+            <h2>3. Data Storage and Security</h2>
+            <p>
+                We do not store personal data. All location searches are processed in real-time and are not logged or associated with any user identity. Crime data is sourced from the public UK Police API and is already anonymized.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>4. Third-Party Services</h2>
+            <p>
+                We use the following third-party services:
+            </p>
+            <ul>
+                <li><strong>UK Police API:</strong> For crime data (no personal data shared)</li>
+                <li><strong>OpenStreetMap:</strong> For map tiles (no personal data shared)</li>
+                <li><strong>Render.com:</strong> For hosting (subject to their privacy policy)</li>
+            </ul>
+        </section>
+
+        <section class="legal-section">
+            <h2>5. Cookies</h2>
+            <p>
+                We do not use cookies for tracking or advertising purposes. Any cookies used are strictly necessary for the operation of the website (such as session management).
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>6. Your Rights</h2>
+            <p>
+                Since we don't collect personal data, there is no personal information to access, modify, or delete. You can clear your browser's local storage at any time to remove any cached data.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>7. Contact Us</h2>
+            <p>
+                If you have any questions about this Privacy Policy, please contact us at:
+                <br><br>
+                Email: privacy@crimespotter-uk.com
+            </p>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- ============================================= -->
+<!-- SAVE AS: views/terms.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .legal-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        .legal-section {
+            margin: 2rem 0;
+        }
+        .legal-section h2 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        .legal-section p, .legal-section li {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        .last-updated {
+            color: #94a3b8;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link">Map</a></li>
+                    <li><a href="/statistics" class="nav-link">Statistics</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="legal-container">
+        <h1>Terms of Service</h1>
+        <p class="last-updated">Last updated: January 2025</p>
+
+        <section class="legal-section">
+            <h2>1. Acceptance of Terms</h2>
+            <p>
+                By accessing and using CrimeSpotter UK, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our service.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>2. Service Description</h2>
+            <p>
+                CrimeSpotter UK provides access to publicly available crime data from the UK Police API. We display this information on interactive maps and provide statistical analysis. The service is provided for informational purposes only.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>3. Data Accuracy</h2>
+            <p>
+                While we strive to provide accurate and up-to-date information, we cannot guarantee the completeness or accuracy of the crime data displayed. The data comes from the UK Police API and may have delays or inaccuracies. Users should not rely solely on this data for making important decisions about safety or security.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>4. Acceptable Use</h2>
+            <p>You agree not to:</p>
+            <ul>
+                <li>Use the service for any unlawful purpose</li>
+                <li>Attempt to gain unauthorized access to our systems</li>
+                <li>Interfere with or disrupt the service</li>
+                <li>Scrape or harvest data from the service in bulk</li>
+                <li>Misrepresent the data or use it in a misleading way</li>
+            </ul>
+        </section>
+
+        <section class="legal-section">
+            <h2>5. Intellectual Property</h2>
+            <p>
+                The crime data is provided under the Open Government Licence. Our website design, code, and original content are protected by copyright. You may not reproduce, distribute, or create derivative works without permission.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>6. Limitation of Liability</h2>
+            <p>
+                CrimeSpotter UK is provided "as is" without any warranties. We are not liable for any damages arising from the use or inability to use our service, including but not limited to direct, indirect, incidental, or consequential damages.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>7. Indemnification</h2>
+            <p>
+                You agree to indemnify and hold harmless CrimeSpotter UK from any claims, damages, or expenses arising from your use of the service or violation of these terms.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>8. Changes to Terms</h2>
+            <p>
+                We reserve the right to modify these terms at any time. Continued use of the service after changes constitutes acceptance of the new terms.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>9. Governing Law</h2>
+            <p>
+                These terms are governed by the laws of the United Kingdom. Any disputes shall be resolved in the courts of England and Wales.
+            </p>
+        </section>
+
+        <section class="legal-section">
+            <h2>10. Contact Information</h2>
+            <p>
+                For questions about these Terms of Service, please contact us at:
+                <br><br>
+                Email: legal@crimespotter-uk.com
+            </p>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

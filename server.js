@@ -150,6 +150,81 @@ app.get('/', async (req, res) => {
     }
 });
 
+// Add these routes to your server.js file, after the home route and before the API routes
+
+/**
+ * Statistics page
+ */
+app.get('/statistics', (req, res) => {
+    try {
+        res.render('statistics', { 
+            title: 'Crime Statistics - CrimeSpotter UK'
+        });
+    } catch (error) {
+        console.error('Error rendering statistics page:', error);
+        res.status(500).render('error', { 
+            error: 'Unable to load statistics page',
+            title: 'Error - CrimeSpotter UK'
+        });
+    }
+});
+
+/**
+ * About page
+ */
+app.get('/about', (req, res) => {
+    try {
+        res.render('about', { 
+            title: 'About - CrimeSpotter UK'
+        });
+    } catch (error) {
+        console.error('Error rendering about page:', error);
+        res.status(500).render('error', { 
+            error: 'Unable to load about page',
+            title: 'Error - CrimeSpotter UK'
+        });
+    }
+});
+
+/**
+ * Privacy Policy page
+ */
+app.get('/privacy', (req, res) => {
+    try {
+        res.render('privacy', { 
+            title: 'Privacy Policy - CrimeSpotter UK'
+        });
+    } catch (error) {
+        console.error('Error rendering privacy page:', error);
+        res.status(500).render('error', { 
+            error: 'Unable to load privacy policy',
+            title: 'Error - CrimeSpotter UK'
+        });
+    }
+});
+
+/**
+ * Terms of Service page
+ */
+app.get('/terms', (req, res) => {
+    try {
+        res.render('terms', { 
+            title: 'Terms of Service - CrimeSpotter UK'
+        });
+    } catch (error) {
+        console.error('Error rendering terms page:', error);
+        res.status(500).render('error', { 
+            error: 'Unable to load terms of service',
+            title: 'Error - CrimeSpotter UK'
+        });
+    }
+});
+
+// Contact page (optional)
+app.get('/contact', (req, res) => {
+    res.redirect('/about#contact');
+});
+
 /**
  * API: Get crime data for a location
  */
