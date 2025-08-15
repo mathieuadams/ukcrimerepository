@@ -11,6 +11,8 @@ class CrimeMap {
         this.currentCrimes = [];
         this.activeFilters = new Set(['all']);
         this.isLoading = false;
+        this.lastUpdateLocation = null;
+        this.hasMovedSinceUpdate = false;
         
         // Crime category colors and icons
         this.crimeStyles = {
@@ -25,7 +27,7 @@ class CrimeMap {
             'criminal-damage-arson': { color: '#ca8a04', icon: '🔥' },
             'other-theft': { color: '#6b7280', icon: '📦' },
             'bicycle-theft': { color: '#0891b2', icon: '🚲' },
-            'shoplifting': { color: '#9333ea', icon: '🛍️' },
+            'shoplifting': { color: '#9333ea', icon: '🛒' },
             'other-crime': { color: '#374151', icon: '❓' }
         };
         
@@ -38,6 +40,7 @@ class CrimeMap {
     init() {
         this.createMap();
         this.setupEventListeners();
+        this.addUpdateLocationButton();
         console.log('🗺️ Crime map initialized');
     }
 
@@ -87,12 +90,133 @@ class CrimeMap {
 
         // Map event listeners
         this.map.on('moveend', () => {
-            this.updateLocationInfo();
+            this.onMapMove();
         });
 
         this.map.on('zoomend', () => {
-            this.updateLocationInfo();
+            this.onMapMove();
         });
+
+        // Store initial location
+        this.lastUpdateLocation = this.map.getCenter();
+    }
+
+    /**
+     * Handle map movement
+     */
+    onMapMove() {
+        this.updateLocationInfo();
+        
+        // Check if map has moved significantly
+        const currentCenter = this.map.getCenter();
+        if (this.lastUpdateLocation) {
+            const distance = this.lastUpdateLocation.distanceTo(currentCenter);
+            // If moved more than 500 meters, show the update button
+            if (distance > 500) {
+                this.hasMovedSinceUpdate = true;
+                this.showUpdateButton();
+            }
+        }
+    }
+
+    /**
+     * Add update location button to the map
+     */
+    addUpdateLocationButton() {
+        // Create custom control for update button
+        const UpdateControl = L.Control.extend({
+            options: {
+                position: 'topleft'
+            },
+
+            onAdd: (map) => {
+                const container = L.DomUtil.create('div', 'update-location-control');
+                container.innerHTML = `
+                    <button id="update-location-btn" class="update-location-btn" style="display: none;">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Update This Location</span>
+                    </button>
+                `;
+                
+                // Prevent map interactions when clicking the button
+                L.DomEvent.disableClickPropagation(container);
+                L.DomEvent.disableScrollPropagation(container);
+                
+                return container;
+            }
+        });
+
+        // Add control to map
+        new UpdateControl().addTo(this.map);
+
+        // Add click handler after button is added to DOM
+        setTimeout(() => {
+            const updateBtn = document.getElementById('update-location-btn');
+            if (updateBtn) {
+                updateBtn.addEventListener('click', () => {
+                    this.updateCurrentLocation();
+                });
+            }
+        }, 100);
+    }
+
+    /**
+     * Show the update button
+     */
+    showUpdateButton() {
+        const updateBtn = document.getElementById('update-location-btn');
+        if (updateBtn && this.hasMovedSinceUpdate) {
+            updateBtn.style.display = 'flex';
+            updateBtn.classList.add('pulse');
+            
+            // Remove pulse animation after 2 seconds
+            setTimeout(() => {
+                updateBtn.classList.remove('pulse');
+            }, 2000);
+        }
+    }
+
+    /**
+     * Hide the update button
+     */
+    hideUpdateButton() {
+        const updateBtn = document.getElementById('update-location-btn');
+        if (updateBtn) {
+            updateBtn.style.display = 'none';
+        }
+    }
+
+    /**
+     * Update crime data for current map location
+     */
+    async updateCurrentLocation() {
+        const center = this.map.getCenter();
+        const updateBtn = document.getElementById('update-location-btn');
+        
+        // Update button state
+        if (updateBtn) {
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Loading...</span>';
+        }
+        
+        try {
+            await this.loadCrimes(center.lat, center.lng);
+            this.lastUpdateLocation = center;
+            this.hasMovedSinceUpdate = false;
+            this.hideUpdateButton();
+            
+            // Show success message
+            this.showNotification('Location updated successfully!', 'success');
+        } catch (error) {
+            console.error('Failed to update location:', error);
+            this.showNotification('Failed to update location. Please try again.', 'error');
+        } finally {
+            // Restore button state
+            if (updateBtn) {
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = '<i class="fas fa-sync-alt"></i> <span>Update This Location</span>';
+            }
+        }
     }
 
     /**
@@ -139,6 +263,14 @@ class CrimeMap {
                 this.toggleFullscreen();
             });
         }
+
+        // Add manual refresh button
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.updateCurrentLocation();
+            });
+        }
     }
 
     /**
@@ -169,6 +301,9 @@ class CrimeMap {
                 this.updateStatistics(data);
                 this.updateFilters(data.categories || {});
                 
+                // Update location display
+                this.updateLocationDisplay(lat, lng);
+                
                 // Fit map to bounds if we have crime data
                 if (data.bounds && this.currentCrimes.length > 0) {
                     this.fitToBounds(data.bounds);
@@ -189,11 +324,31 @@ class CrimeMap {
     }
 
     /**
+     * Update location display
+     */
+    updateLocationDisplay(lat, lng) {
+        const locationName = document.querySelector('.location-name');
+        const locationCoords = document.querySelector('.location-coords');
+        
+        if (locationName) {
+            // Try to get area name from reverse geocoding or use coordinates
+            locationName.textContent = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+        }
+        
+        if (locationCoords) {
+            locationCoords.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        }
+    }
+
+    /**
      * Load crimes for current map view
      */
     async loadCrimesForCurrentView(date = null) {
         const center = this.map.getCenter();
         await this.loadCrimes(center.lat, center.lng, date);
+        this.lastUpdateLocation = center;
+        this.hasMovedSinceUpdate = false;
+        this.hideUpdateButton();
     }
 
     /**
@@ -205,6 +360,7 @@ class CrimeMap {
 
         if (!crimes || crimes.length === 0) {
             console.log('No crimes to display');
+            this.showNotification('No crimes found in this area for the selected period', 'info');
             return;
         }
 
@@ -462,6 +618,9 @@ class CrimeMap {
                 const { latitude, longitude } = position.coords;
                 this.map.setView([latitude, longitude], 14);
                 this.loadCrimes(latitude, longitude);
+                this.lastUpdateLocation = L.latLng(latitude, longitude);
+                this.hasMovedSinceUpdate = false;
+                this.hideUpdateButton();
                 
                 if (button) {
                     button.innerHTML = '<i class="fas fa-crosshairs"></i>';
@@ -562,9 +721,31 @@ class CrimeMap {
      * Show error message
      */
     showError(message) {
-        // You could implement a toast notification system here
-        console.error(message);
-        alert(message); // Simple fallback
+        this.showNotification(message, 'error');
+    }
+
+    /**
+     * Show notification message
+     */
+    showNotification(message, type = 'info') {
+        // Create notification element if it doesn't exist
+        let notification = document.getElementById('map-notification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'map-notification';
+            notification.className = 'map-notification';
+            document.querySelector('.map-container').appendChild(notification);
+        }
+        
+        // Set message and type
+        notification.textContent = message;
+        notification.className = `map-notification ${type}`;
+        notification.style.display = 'block';
+        
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
     }
 
     /**
@@ -586,20 +767,14 @@ class CrimeMap {
     }
 
     /**
-     * Search for a location and load its crimes
-     */
-    async searchLocation(query) {
-        // This would integrate with a geocoding service
-        // For now, we'll use the quick location buttons
-        console.log('🔍 Searching for:', query);
-    }
-
-    /**
      * Go to a specific coordinate
      */
     goToLocation(lat, lng, zoom = 14) {
         this.map.setView([lat, lng], zoom);
         this.loadCrimes(lat, lng);
+        this.lastUpdateLocation = L.latLng(lat, lng);
+        this.hasMovedSinceUpdate = false;
+        this.hideUpdateButton();
     }
 }
 
