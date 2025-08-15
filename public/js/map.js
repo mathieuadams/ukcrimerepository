@@ -1,560 +1,772 @@
 /**
- * CrimeSpotter UK - Main Application
- * Handles overall app functionality, search, navigation, and user interactions
+ * CrimeSpotter UK - Interactive Map Module
+ * Handles all map-related functionality using Leaflet.js
  */
 
-class CrimeSpotterApp {
-    constructor() {
-        this.crimeMap = null;
-        this.isInitialized = false;
+class CrimeMap {
+    constructor(config) {
+        this.config = config;
+        this.map = null;
+        this.crimeMarkers = null;
+        this.currentCrimes = [];
+        this.activeFilters = new Set(['all']);
+        this.isLoading = false;
+        this.lastUpdateLocation = null;
+        this.hasMovedSinceUpdate = false;
+        this.onDataLoaded = null; // Callback function for when data is loaded
         
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.init());
-        } else {
-            this.init();
-        }
-    }
-
-    /**
-     * Initialize the application
-     */
-    async init() {
-        console.log('🚀 Initializing CrimeSpotter UK...');
-        
-        try {
-            // Hide loading screen
-            this.hideLoadingScreen();
-            
-            // Initialize map
-            this.initializeMap();
-            
-            // Setup event listeners
-            this.setupEventListeners();
-            
-            // Load available dates
-            await this.loadAvailableDates();
-            
-            // Load initial data for London
-            await this.loadInitialData();
-            
-            // Setup header scroll effect
-            this.setupHeaderEffects();
-            
-            // Handle URL parameters if any
-            this.handleUrlParameters();
-            
-            this.isInitialized = true;
-            console.log('✅ CrimeSpotter UK initialized successfully');
-            
-        } catch (error) {
-            console.error('❌ Failed to initialize app:', error);
-            this.showError('Failed to initialize the application. Please refresh the page.');
-        }
-    }
-
-    /**
-     * Initialize the crime map
-     */
-    initializeMap() {
-        if (typeof CrimeMap === 'undefined') {
-            throw new Error('CrimeMap class not loaded');
-        }
-
-        this.crimeMap = new CrimeMap(window.CRIMESPOTTER_CONFIG);
-        
-        // Listen for crime data updates
-        this.crimeMap.onDataLoaded = (data) => {
-            this.updateCrimeStatistics(data);
+        // Crime category colors and icons
+        this.crimeStyles = {
+            'burglary': { color: '#dc2626', icon: '🏠' },
+            'theft-from-the-person': { color: '#ea580c', icon: '👤' },
+            'vehicle-crime': { color: '#d97706', icon: '🚗' },
+            'violent-crime': { color: '#be123c', icon: '⚠️' },
+            'anti-social-behaviour': { color: '#7c3aed', icon: '📢' },
+            'drugs': { color: '#059669', icon: '💊' },
+            'robbery': { color: '#b91c1c', icon: '💰' },
+            'public-order': { color: '#0369a1', icon: '👮' },
+            'criminal-damage-arson': { color: '#ca8a04', icon: '🔥' },
+            'other-theft': { color: '#6b7280', icon: '📦' },
+            'bicycle-theft': { color: '#0891b2', icon: '🚲' },
+            'shoplifting': { color: '#9333ea', icon: '🛒' },
+            'other-crime': { color: '#374151', icon: '❓' }
         };
         
-        console.log('🗺️ Map initialized');
+        this.init();
     }
 
     /**
-     * Update crime statistics in the hero section
+     * Initialize the map
      */
-    updateCrimeStatistics(data) {
-        const totalCrimesElement = document.getElementById('total-crimes');
-        
-        if (totalCrimesElement) {
-            if (data && data.count !== undefined) {
-                totalCrimesElement.textContent = data.count.toLocaleString();
-            } else {
-                totalCrimesElement.textContent = '0';
-            }
+    init() {
+        this.createMap();
+        this.setupEventListeners();
+        this.addUpdateLocationButton();
+        console.log('🗺️ Crime map initialized');
+    }
+
+    /**
+     * Create the Leaflet map
+     */
+    createMap() {
+        // Check if map container exists
+        const mapContainer = document.getElementById('crime-map');
+        if (!mapContainer) {
+            console.error('Map container not found!');
+            throw new Error('Map container element with id "crime-map" not found');
         }
-    }
-
-    /**
-     * Setup all event listeners
-     */
-    setupEventListeners() {
-        // Search functionality
-        this.setupSearchListeners();
         
-        // Quick location buttons
-        this.setupQuickLocationButtons();
-        
-        // Mobile menu
-        this.setupMobileMenu();
-        
-        // Share functionality
-        this.setupShareButton();
-        
-        // Navigation
-        this.setupNavigation();
-        
-        console.log('🔡 Event listeners setup complete');
-    }
-
-    /**
-     * Setup search functionality
-     */
-    setupSearchListeners() {
-        const searchInput = document.getElementById('location-search');
-        const searchBtn = document.getElementById('search-btn');
-        const suggestionsContainer = document.getElementById('search-suggestions');
-
-        if (searchInput && searchBtn) {
-            // Search button click
-            searchBtn.addEventListener('click', () => {
-                this.performSearch();
-            });
-
-            // Enter key in search input
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.performSearch();
-                }
-            });
-
-            // Search suggestions (with debounce)
-            let searchTimeout;
-            searchInput.addEventListener('input', (e) => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    this.handleSearchInput(e.target.value);
-                }, 300);
-            });
-
-            // Hide suggestions when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!searchInput.contains(e.target) && !suggestionsContainer?.contains(e.target)) {
-                    this.hideSuggestions();
-                }
-            });
-        }
-    }
-
-    /**
-     * Setup quick location buttons
-     */
-    setupQuickLocationButtons() {
-        const quickButtons = document.querySelectorAll('.quick-btn');
-        
-        quickButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const coords = button.dataset.coords;
-                const name = button.dataset.name;
-                
-                if (coords) {
-                    const [lat, lng] = coords.split(',').map(parseFloat);
-                    this.goToLocation(lat, lng, name);
-                }
-            });
+        // Initialize map
+        this.map = L.map('crime-map', {
+            center: this.config.mapCenter,
+            zoom: this.config.mapZoom,
+            zoomControl: false
         });
-    }
 
-    /**
-     * Setup mobile menu
-     */
-    setupMobileMenu() {
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const navLinks = document.querySelector('.nav-links');
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18,
+            minZoom: 5
+        }).addTo(this.map);
 
-        if (mobileMenuBtn && navLinks) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenuBtn.classList.toggle('active');
-                navLinks.classList.toggle('mobile-open');
-            });
+        // Add zoom control to bottom right
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(this.map);
 
-            // Close menu when clicking on a link
-            navLinks.addEventListener('click', (e) => {
-                if (e.target.classList.contains('nav-link')) {
-                    mobileMenuBtn.classList.remove('active');
-                    navLinks.classList.remove('mobile-open');
-                }
-            });
-        }
-    }
-
-    /**
-     * Setup share button
-     */
-    setupShareButton() {
-        const shareBtn = document.getElementById('share-btn');
-        
-        if (shareBtn) {
-            shareBtn.addEventListener('click', () => {
-                this.shareLocation();
-            });
-        }
-    }
-
-    /**
-     * Setup smooth navigation
-     */
-    setupNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
+        // Initialize marker cluster group
+        this.crimeMarkers = L.markerClusterGroup({
+            chunkedLoading: true,
+            maxClusterRadius: 50,
+            iconCreateFunction: (cluster) => {
+                const count = cluster.getChildCount();
+                let size = 'small';
                 
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href.substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    
-                    if (targetElement) {
-                        const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-                        const targetPosition = targetElement.offsetTop - headerHeight;
-                        
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
-                    
-                    // Update active nav link
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                }
-            });
+                if (count > 100) size = 'large';
+                else if (count > 30) size = 'medium';
+                
+                return L.divIcon({
+                    html: `<div><span>${count}</span></div>`,
+                    className: `marker-cluster marker-cluster-${size}`,
+                    iconSize: L.point(40, 40)
+                });
+            }
         });
+        
+        this.map.addLayer(this.crimeMarkers);
+
+        // Map event listeners
+        this.map.on('moveend', () => {
+            this.onMapMove();
+        });
+
+        this.map.on('zoomend', () => {
+            this.onMapMove();
+        });
+
+        // Store initial location
+        this.lastUpdateLocation = this.map.getCenter();
     }
 
     /**
-     * Setup header scroll effects
+     * Handle map movement
      */
-    setupHeaderEffects() {
-        const header = document.getElementById('header');
+    onMapMove() {
+        this.updateLocationInfo();
         
-        if (header) {
-            let lastScrollTop = 0;
-            
-            window.addEventListener('scroll', () => {
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        // Check if map has moved significantly
+        const currentCenter = this.map.getCenter();
+        if (this.lastUpdateLocation) {
+            const distance = this.lastUpdateLocation.distanceTo(currentCenter);
+            // If moved more than 500 meters, show the update button
+            if (distance > 500) {
+                this.hasMovedSinceUpdate = true;
+                this.showUpdateButton();
+            }
+        }
+    }
+
+    /**
+     * Add update location button to the map
+     */
+    addUpdateLocationButton() {
+        // Create custom control for update button
+        const UpdateControl = L.Control.extend({
+            options: {
+                position: 'topleft'
+            },
+
+            onAdd: (map) => {
+                const container = L.DomUtil.create('div', 'update-location-control');
+                container.innerHTML = `
+                    <button id="update-location-btn" class="update-location-btn" style="display: none;">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Update This Location</span>
+                    </button>
+                `;
                 
-                // Add/remove scrolled class
-                if (scrollTop > 100) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
+                // Prevent map interactions when clicking the button
+                L.DomEvent.disableClickPropagation(container);
+                L.DomEvent.disableScrollPropagation(container);
                 
-                lastScrollTop = scrollTop;
-            });
+                return container;
+            }
+        });
+
+        // Add control to map
+        new UpdateControl().addTo(this.map);
+
+        // Add click handler after button is added to DOM
+        setTimeout(() => {
+            const updateBtn = document.getElementById('update-location-btn');
+            if (updateBtn) {
+                updateBtn.addEventListener('click', () => {
+                    this.updateCurrentLocation();
+                });
+            }
+        }, 100);
+    }
+
+    /**
+     * Show the update button
+     */
+    showUpdateButton() {
+        const updateBtn = document.getElementById('update-location-btn');
+        if (updateBtn && this.hasMovedSinceUpdate) {
+            updateBtn.style.display = 'flex';
+            updateBtn.classList.add('pulse');
+            
+            // Remove pulse animation after 2 seconds
+            setTimeout(() => {
+                updateBtn.classList.remove('pulse');
+            }, 2000);
         }
     }
 
     /**
-     * Load available dates from API
+     * Hide the update button
      */
-    async loadAvailableDates() {
+    hideUpdateButton() {
+        const updateBtn = document.getElementById('update-location-btn');
+        if (updateBtn) {
+            updateBtn.style.display = 'none';
+        }
+    }
+
+    /**
+     * Update crime data for current map location
+     */
+    async updateCurrentLocation() {
+        const center = this.map.getCenter();
+        const updateBtn = document.getElementById('update-location-btn');
+        
+        // Update button state
+        if (updateBtn) {
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Loading...</span>';
+        }
+        
         try {
-            const response = await fetch(`${window.CRIMESPOTTER_CONFIG.apiBaseUrl}/dates`);
-            const data = await response.json();
+            const data = await this.loadCrimes(center.lat, center.lng);
+            this.lastUpdateLocation = center;
+            this.hasMovedSinceUpdate = false;
+            this.hideUpdateButton();
             
-            if (data.success && data.dates) {
-                this.populateDateSelector(data.dates);
-                console.log('📅 Loaded available dates');
-            }
+            // Show success message
+            this.showNotification('Location updated successfully!', 'success');
         } catch (error) {
-            console.warn('⚠️ Could not load available dates:', error);
-        }
-    }
-
-    /**
-     * Populate the date selector with available dates
-     */
-    populateDateSelector(dates) {
-        const dateSelector = document.getElementById('date-selector');
-        
-        if (dateSelector && dates.length > 0) {
-            // Clear existing options
-            dateSelector.innerHTML = '';
-            
-            dates.forEach((dateObj, index) => {
-                const option = document.createElement('option');
-                option.value = dateObj.date;
-                option.textContent = `${dateObj.date}${index === 0 ? ' (Latest)' : ''}`;
-                dateSelector.appendChild(option);
-            });
-            
-            // Add change event listener
-            dateSelector.addEventListener('change', (e) => {
-                if (this.crimeMap) {
-                    this.crimeMap.loadCrimesForCurrentView(e.target.value);
-                }
-            });
-        }
-    }
-
-    /**
-     * Load initial data for the default location
-     */
-    async loadInitialData() {
-        // Set initial loading state
-        const totalCrimesElement = document.getElementById('total-crimes');
-        if (totalCrimesElement) {
-            totalCrimesElement.textContent = 'Loading...';
-        }
-        
-        // Load crimes for London by default
-        if (this.crimeMap) {
-            const data = await this.crimeMap.loadCrimes(51.5074, -0.1278); // London coordinates
-            this.updateLocationInfo('London', 51.5074, -0.1278);
-            
-            // Update the initial statistics
-            if (data) {
-                this.updateCrimeStatistics(data);
-            } else {
-                // If no data, set to 0
-                if (totalCrimesElement) {
-                    totalCrimesElement.textContent = '0';
-                }
-            }
-        }
-    }
-
-    /**
-     * Perform search based on input
-     */
-    async performSearch() {
-        const searchInput = document.getElementById('location-search');
-        
-        if (!searchInput) return;
-        
-        const query = searchInput.value.trim();
-        
-        if (!query) {
-            this.showError('Please enter a location to search');
-            return;
-        }
-
-        // Show loading state
-        const searchBtn = document.getElementById('search-btn');
-        const originalContent = searchBtn.innerHTML;
-        searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        searchBtn.disabled = true;
-
-        try {
-            // Try to geocode the location
-            const location = await this.geocodeLocation(query);
-            
-            if (location) {
-                this.goToLocation(location.lat, location.lng, location.name);
-                this.hideSuggestions();
-                searchInput.value = location.name;
-            } else {
-                this.showError('Location not found. Please try a different search term.');
-            }
-            
-        } catch (error) {
-            console.error('Search error:', error);
-            this.showError('Search failed. Please try again.');
+            console.error('Failed to update location:', error);
+            this.showNotification('Failed to update location. Please try again.', 'error');
         } finally {
             // Restore button state
-            searchBtn.innerHTML = originalContent;
-            searchBtn.disabled = false;
+            if (updateBtn) {
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = '<i class="fas fa-sync-alt"></i> <span>Update This Location</span>';
+            }
         }
     }
 
     /**
-     * Handle search input for suggestions
+     * Setup event listeners
      */
-    async handleSearchInput(query) {
-        if (query.length < 2) {
-            this.hideSuggestions();
-            return;
+    setupEventListeners() {
+        // Controls toggle
+        const controlsToggle = document.getElementById('controls-toggle');
+        if (controlsToggle) {
+            controlsToggle.addEventListener('click', () => {
+                this.toggleControls();
+            });
         }
 
-        try {
-            const suggestions = await this.getSuggestions(query);
-            this.showSuggestions(suggestions);
-        } catch (error) {
-            console.error('Suggestions error:', error);
+        // Date selector - removed duplicate listener that was in app.js
+        const dateSelector = document.getElementById('date-selector');
+        if (dateSelector) {
+            // Remove any existing listeners first
+            const newDateSelector = dateSelector.cloneNode(true);
+            dateSelector.parentNode.replaceChild(newDateSelector, dateSelector);
+            
+            newDateSelector.addEventListener('change', (e) => {
+                this.loadCrimesForCurrentView(e.target.value);
+            });
+        }
+
+        // Crime type filters
+        const crimeFilters = document.getElementById('crime-filters');
+        if (crimeFilters) {
+            crimeFilters.addEventListener('change', (e) => {
+                if (e.target.type === 'checkbox') {
+                    this.handleFilterChange(e.target);
+                }
+            });
+        }
+
+        // Map controls
+        const myLocationBtn = document.getElementById('my-location-btn');
+        if (myLocationBtn) {
+            myLocationBtn.addEventListener('click', () => {
+                this.goToUserLocation();
+            });
+        }
+
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', () => {
+                this.toggleFullscreen();
+            });
+        }
+
+        // Add manual refresh button
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.updateCurrentLocation();
+            });
         }
     }
 
     /**
-     * Get location suggestions
+     * Load crimes for a specific location
      */
-    async getSuggestions(query) {
-        try {
-            const response = await fetch(`${window.CRIMESPOTTER_CONFIG.apiBaseUrl}/search?q=${encodeURIComponent(query)}`);
-            const data = await response.json();
-            return data.suggestions || [];
-        } catch (error) {
-            return [];
-        }
-    }
-
-    /**
-     * Show search suggestions
-     */
-    showSuggestions(suggestions) {
-        const suggestionsContainer = document.getElementById('search-suggestions');
+    async loadCrimes(lat, lng, date = null) {
+        if (this.isLoading) return null;
         
-        if (!suggestionsContainer) return;
+        this.showLoading(true);
+        this.isLoading = true;
+        
+        let returnData = null;
 
-        if (suggestions.length === 0) {
-            this.hideSuggestions();
-            return;
-        }
+        try {
+            const params = new URLSearchParams({
+                lat: lat.toString(),
+                lng: lng.toString()
+            });
 
-        const html = suggestions.map(suggestion => `
-            <div class="suggestion-item" data-coords="${suggestion.coords.join(',')}" data-name="${suggestion.name}">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>${suggestion.name}</span>
-            </div>
-        `).join('');
+            if (date) {
+                params.append('date', date);
+            }
 
-        suggestionsContainer.innerHTML = html;
-        suggestionsContainer.style.display = 'block';
+            const response = await fetch(`${this.config.apiBaseUrl}/crimes?${params}`);
+            const data = await response.json();
 
-        // Add click listeners to suggestions
-        suggestionsContainer.querySelectorAll('.suggestion-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const coords = item.dataset.coords.split(',').map(parseFloat);
-                const name = item.dataset.name;
+            if (data.success) {
+                this.currentCrimes = data.crimes || [];
+                this.displayCrimes(this.currentCrimes);
+                this.updateStatistics(data);
+                this.updateFilters(data.categories || {});
                 
-                this.goToLocation(coords[0], coords[1], name);
+                // Update location display
+                this.updateLocationDisplay(lat, lng);
                 
-                const searchInput = document.getElementById('location-search');
-                if (searchInput) {
-                    searchInput.value = name;
+                // Fit map to bounds if we have crime data
+                if (data.bounds && this.currentCrimes.length > 0) {
+                    this.fitToBounds(data.bounds);
                 }
                 
-                this.hideSuggestions();
-            });
-        });
-    }
+                // Call the callback if it exists
+                if (this.onDataLoaded && typeof this.onDataLoaded === 'function') {
+                    this.onDataLoaded(data);
+                }
+                
+                returnData = data;
+                console.log(`✅ Loaded ${this.currentCrimes.length} crimes`);
+            } else {
+                throw new Error(data.error || 'Failed to load crime data');
+            }
 
-    /**
-     * Hide search suggestions
-     */
-    hideSuggestions() {
-        const suggestionsContainer = document.getElementById('search-suggestions');
+        } catch (error) {
+            console.error('❌ Error loading crimes:', error);
+            this.showError('Failed to load crime data. Please try again.');
+            
+            // Still call callback with error state
+            if (this.onDataLoaded && typeof this.onDataLoaded === 'function') {
+                this.onDataLoaded({ success: false, count: 0 });
+            }
+        } finally {
+            this.showLoading(false);
+            this.isLoading = false;
+        }
         
-        if (suggestionsContainer) {
-            suggestionsContainer.style.display = 'none';
-            suggestionsContainer.innerHTML = '';
-        }
+        return returnData;
     }
 
     /**
-     * Simple geocoding for common UK locations
+     * Update location display
      */
-    async geocodeLocation(query) {
-        const locations = {
-            'london': { name: 'London', lat: 51.5074, lng: -0.1278 },
-            'manchester': { name: 'Manchester', lat: 53.4808, lng: -2.2426 },
-            'birmingham': { name: 'Birmingham', lat: 52.4862, lng: -1.8904 },
-            'leeds': { name: 'Leeds', lat: 53.8008, lng: -1.5491 },
-            'liverpool': { name: 'Liverpool', lat: 53.4084, lng: -2.9916 },
-            'bristol': { name: 'Bristol', lat: 51.4545, lng: -2.5879 },
-            'sheffield': { name: 'Sheffield', lat: 53.3811, lng: -1.4701 },
-            'newcastle': { name: 'Newcastle', lat: 54.9783, lng: -1.6178 },
-            'nottingham': { name: 'Nottingham', lat: 52.9548, lng: -1.1581 },
-            'glasgow': { name: 'Glasgow', lat: 55.8642, lng: -4.2518 },
-            'edinburgh': { name: 'Edinburgh', lat: 55.9533, lng: -3.1883 },
-            'cardiff': { name: 'Cardiff', lat: 51.4816, lng: -3.1791 },
-            'belfast': { name: 'Belfast', lat: 54.5973, lng: -5.9301 }
-        };
-
-        const normalizedQuery = query.toLowerCase().trim();
-        return locations[normalizedQuery] || null;
-    }
-
-    /**
-     * Go to a specific location
-     */
-    goToLocation(lat, lng, name) {
-        if (this.crimeMap) {
-            this.crimeMap.goToLocation(lat, lng);
-            this.updateLocationInfo(name, lat, lng);
-            console.log(`📍 Navigated to ${name} (${lat}, ${lng})`);
-        }
-    }
-
-    /**
-     * Update location info in the sidebar
-     */
-    updateLocationInfo(name, lat, lng) {
+    updateLocationDisplay(lat, lng) {
         const locationName = document.querySelector('.location-name');
         const locationCoords = document.querySelector('.location-coords');
-
-        if (locationName) {
-            locationName.textContent = name || 'Unknown Location';
-        }
-
+        
         if (locationCoords) {
             locationCoords.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
         }
     }
 
     /**
-     * Share current location
+     * Load crimes for current map view
      */
-    async shareLocation() {
-        const center = this.crimeMap?.map.getCenter();
-        
-        if (!center) {
-            this.showError('No location to share');
+    async loadCrimesForCurrentView(date = null) {
+        const center = this.map.getCenter();
+        const data = await this.loadCrimes(center.lat, center.lng, date);
+        this.lastUpdateLocation = center;
+        this.hasMovedSinceUpdate = false;
+        this.hideUpdateButton();
+        return data;
+    }
+
+    /**
+     * Display crimes on the map
+     */
+    displayCrimes(crimes) {
+        // Clear existing markers
+        this.crimeMarkers.clearLayers();
+
+        if (!crimes || crimes.length === 0) {
+            console.log('No crimes to display');
+            this.showNotification('No crimes found in this area for the selected period', 'info');
             return;
         }
 
-        const url = `${window.location.origin}/?lat=${center.lat.toFixed(4)}&lng=${center.lng.toFixed(4)}`;
-        const title = 'CrimeSpotter UK - Crime Data';
-        const text = `Check out crime data for this location: ${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}`;
+        // Filter crimes based on active filters
+        const filteredCrimes = crimes.filter(crime => this.shouldShowCrime(crime));
+        
+        // Create markers for each filtered crime
+        const markers = filteredCrimes
+            .map(crime => this.createCrimeMarker(crime))
+            .filter(marker => marker !== null);
 
-        try {
-            if (navigator.share) {
-                // Use Web Share API if available
-                await navigator.share({
-                    title: title,
-                    text: text,
-                    url: url
-                });
-                console.log('📤 Shared successfully');
-            } else {
-                // Fallback: copy to clipboard
-                await navigator.clipboard.writeText(url);
-                this.showSuccess('Link copied to clipboard!');
-            }
-        } catch (error) {
-            console.error('Share failed:', error);
-            // Final fallback: show the URL
-            prompt('Copy this link to share:', url);
+        // Add markers to cluster group
+        if (markers.length > 0) {
+            this.crimeMarkers.addLayers(markers);
+        }
+
+        console.log(`📍 Displayed ${markers.length} of ${crimes.length} crime markers (filtered)`);
+        
+        // Update the count display with filtered count
+        this.updateFilteredCount(markers.length);
+    }
+
+    /**
+     * Update filtered crime count display
+     */
+    updateFilteredCount(count) {
+        const areaTotal = document.getElementById('area-total');
+        if (areaTotal) {
+            areaTotal.textContent = count;
         }
     }
 
     /**
-     * Hide loading screen with animation
+     * Create a marker for a crime incident
      */
-    hideLoadingScreen() {
-        const loadingScreen = document.getElementById('loading-screen');
+    createCrimeMarker(crime) {
+        if (!crime.location || !crime.location.latitude || !crime.location.longitude) {
+            return null;
+        }
+
+        const lat = parseFloat(crime.location.latitude);
+        const lng = parseFloat(crime.location.longitude);
+
+        if (isNaN(lat) || isNaN(lng)) {
+            return null;
+        }
+
+        const style = this.crimeStyles[crime.category] || this.crimeStyles['other-crime'];
         
-        if (loadingScreen) {
-            setTimeout(() => {
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500);
-            }, 1000); // Show loading for at least 1 second
+        // Create custom icon
+        const icon = L.divIcon({
+            className: 'crime-marker',
+            html: `
+                <div class="crime-marker-inner" style="background-color: ${style.color}">
+                    <span class="crime-icon">${style.icon}</span>
+                </div>
+            `,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+
+        // Create marker
+        const marker = L.marker([lat, lng], { icon });
+
+        // Create popup content
+        const popupContent = this.createPopupContent(crime);
+        marker.bindPopup(popupContent, {
+            maxWidth: 300,
+            className: 'crime-popup'
+        });
+
+        return marker;
+    }
+
+    /**
+     * Create popup content for a crime marker
+     */
+    createPopupContent(crime) {
+        const style = this.crimeStyles[crime.category] || this.crimeStyles['other-crime'];
+        const categoryDisplay = crime.category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        
+        return `
+            <div class="crime-popup-content">
+                <div class="crime-popup-header">
+                    <span class="crime-popup-icon" style="color: ${style.color}">${style.icon}</span>
+                    <h3 class="crime-popup-title">${categoryDisplay}</h3>
+                </div>
+                <div class="crime-popup-details">
+                    <p><strong>📍 Location:</strong> ${crime.location.street?.name || 'Unknown location'}</p>
+                    <p><strong>📅 Date:</strong> ${this.formatDate(crime.month)}</p>
+                    ${crime.outcome_status ? `<p><strong>⚖️ Outcome:</strong> ${crime.outcome_status.category}</p>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Check if a crime should be displayed based on current filters
+     */
+    shouldShowCrime(crime) {
+        if (this.activeFilters.has('all')) {
+            return true;
+        }
+        
+        return this.activeFilters.has(crime.category);
+    }
+
+    /**
+     * Handle filter checkbox changes
+     */
+    handleFilterChange(checkbox) {
+        const value = checkbox.value;
+        
+        if (value === 'all') {
+            if (checkbox.checked) {
+                // Select all
+                this.activeFilters.clear();
+                this.activeFilters.add('all');
+                // Check all other checkboxes
+                document.querySelectorAll('#crime-filters input[type="checkbox"]').forEach(cb => {
+                    cb.checked = true;
+                });
+            } else {
+                // If unchecking "all", uncheck everything
+                this.activeFilters.clear();
+                document.querySelectorAll('#crime-filters input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                });
+            }
+        } else {
+            if (checkbox.checked) {
+                // Remove "all" if it was selected
+                if (this.activeFilters.has('all')) {
+                    this.activeFilters.clear();
+                    const allCheckbox = document.querySelector('#crime-filters input[value="all"]');
+                    if (allCheckbox) allCheckbox.checked = false;
+                }
+                this.activeFilters.add(value);
+            } else {
+                this.activeFilters.delete(value);
+            }
+            
+            // Check if all individual filters are selected
+            const allFilters = Array.from(document.querySelectorAll('#crime-filters input[type="checkbox"]:not([value="all"])'));
+            const allChecked = allFilters.every(cb => cb.checked);
+            
+            if (allChecked && allFilters.length > 0) {
+                // If all individual filters are checked, check "all" as well
+                this.activeFilters.clear();
+                this.activeFilters.add('all');
+                const allCheckbox = document.querySelector('#crime-filters input[value="all"]');
+                if (allCheckbox) allCheckbox.checked = true;
+                allFilters.forEach(cb => cb.checked = true);
+            } else if (this.activeFilters.size === 0) {
+                // If no filters selected, select all
+                this.activeFilters.add('all');
+                const allCheckbox = document.querySelector('#crime-filters input[value="all"]');
+                if (allCheckbox) allCheckbox.checked = true;
+                document.querySelectorAll('#crime-filters input[type="checkbox"]').forEach(cb => {
+                    cb.checked = true;
+                });
+            }
+        }
+
+        // Re-display crimes with new filters
+        this.displayCrimes(this.currentCrimes);
+        console.log('🔍 Applied filters:', Array.from(this.activeFilters));
+    }
+
+    /**
+     * Update crime type filters based on available data
+     */
+    updateFilters(categories) {
+        const filtersContainer = document.getElementById('crime-filters');
+        if (!filtersContainer) return;
+
+        // Keep the "All Crimes" filter and update its count
+        const allFilter = filtersContainer.querySelector('input[value="all"]');
+        const allCount = filtersContainer.querySelector('#count-all');
+        
+        let totalCount = 0;
+        Object.values(categories).forEach(count => totalCount += count);
+        
+        if (allCount) {
+            allCount.textContent = totalCount;
+        }
+
+        // Remove existing category filters (except "all")
+        const existingFilters = filtersContainer.querySelectorAll('.filter-item:not(:first-child)');
+        existingFilters.forEach(filter => filter.remove());
+
+        // Add new category filters
+        Object.entries(categories)
+            .sort(([,a], [,b]) => b - a) // Sort by count descending
+            .forEach(([category, count]) => {
+                if (count > 0) {
+                    const filterHtml = this.createFilterHtml(category, count);
+                    filtersContainer.insertAdjacentHTML('beforeend', filterHtml);
+                }
+            });
+    }
+
+    /**
+     * Create HTML for a filter item
+     */
+    createFilterHtml(category, count) {
+        const style = this.crimeStyles[category] || this.crimeStyles['other-crime'];
+        const displayName = category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        
+        return `
+            <label class="filter-item">
+                <input type="checkbox" value="${category}" ${this.activeFilters.has(category) || this.activeFilters.has('all') ? 'checked' : ''}>
+                <span class="checkmark"></span>
+                <span class="filter-icon" style="color: ${style.color}">${style.icon}</span>
+                <span class="filter-text">${displayName}</span>
+                <span class="filter-count">${count}</span>
+            </label>
+        `;
+    }
+
+    /**
+     * Update statistics panel
+     */
+    updateStatistics(data) {
+        // Update area statistics
+        const areaTotal = document.getElementById('area-total');
+        const areaCommon = document.getElementById('area-common');
+        const areaSafety = document.getElementById('area-safety');
+
+        if (areaTotal) {
+            areaTotal.textContent = data.count || 0;
+        }
+
+        if (areaCommon && data.categories) {
+            const mostCommon = Object.entries(data.categories)
+                .sort(([,a], [,b]) => b - a)[0];
+            
+            if (mostCommon) {
+                const displayName = mostCommon[0].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                areaCommon.textContent = displayName;
+            }
+        }
+
+        if (areaSafety) {
+            // Simple safety score calculation (inverse of crime density)
+            const safetyScore = Math.max(1, Math.min(10, 10 - Math.floor(data.count / 10)));
+            areaSafety.textContent = `${safetyScore}/10`;
+            areaSafety.className = `safety-score ${safetyScore >= 7 ? 'good' : safetyScore >= 4 ? 'medium' : 'poor'}`;
+        }
+    }
+
+    /**
+     * Update location info in sidebar
+     */
+    updateLocationInfo() {
+        const locationInfo = document.getElementById('location-info');
+        if (!locationInfo) return;
+
+        const center = this.map.getCenter();
+        const zoom = this.map.getZoom();
+
+        const locationCoords = locationInfo.querySelector('.location-coords');
+
+        if (locationCoords) {
+            locationCoords.textContent = `${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}`;
+        }
+    }
+
+    /**
+     * Go to user's current location
+     */
+    goToUserLocation() {
+        if (!navigator.geolocation) {
+            alert('Geolocation is not supported by this browser.');
+            return;
+        }
+
+        const button = document.getElementById('my-location-btn');
+        if (button) {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                this.map.setView([latitude, longitude], 14);
+                await this.loadCrimes(latitude, longitude);
+                this.lastUpdateLocation = L.latLng(latitude, longitude);
+                this.hasMovedSinceUpdate = false;
+                this.hideUpdateButton();
+                
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-crosshairs"></i>';
+                }
+            },
+            (error) => {
+                console.error('Geolocation error:', error);
+                alert('Unable to get your location. Please try again.');
+                
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-crosshairs"></i>';
+                }
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 300000 // 5 minutes
+            }
+        );
+    }
+
+    /**
+     * Toggle fullscreen mode
+     */
+    toggleFullscreen() {
+        const mapSection = document.querySelector('.map-section');
+        const button = document.getElementById('fullscreen-btn');
+        
+        if (!document.fullscreenElement) {
+            mapSection.requestFullscreen().then(() => {
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-compress"></i>';
+                }
+                // Invalidate map size after fullscreen
+                setTimeout(() => this.map.invalidateSize(), 100);
+            });
+        } else {
+            document.exitFullscreen().then(() => {
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-expand"></i>';
+                }
+                // Invalidate map size after exit fullscreen
+                setTimeout(() => this.map.invalidateSize(), 100);
+            });
+        }
+    }
+
+    /**
+     * Toggle controls sidebar
+     */
+    toggleControls() {
+        const controls = document.getElementById('map-controls');
+        const toggle = document.getElementById('controls-toggle');
+        
+        if (controls && toggle) {
+            controls.classList.toggle('collapsed');
+            const icon = toggle.querySelector('i');
+            
+            if (controls.classList.contains('collapsed')) {
+                icon.className = 'fas fa-chevron-right';
+            } else {
+                icon.className = 'fas fa-chevron-left';
+            }
+            
+            // Invalidate map size when sidebar toggles
+            setTimeout(() => this.map.invalidateSize(), 300);
+        }
+    }
+
+    /**
+     * Fit map to crime data bounds
+     */
+    fitToBounds(bounds) {
+        if (!bounds) return;
+        
+        const leafletBounds = L.latLngBounds(
+            [bounds.south, bounds.west],
+            [bounds.north, bounds.east]
+        );
+        
+        this.map.fitBounds(leafletBounds, {
+            padding: [20, 20],
+            maxZoom: 15
+        });
+    }
+
+    /**
+     * Show/hide loading overlay
+     */
+    showLoading(show) {
+        const loadingOverlay = document.getElementById('map-loading');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = show ? 'flex' : 'none';
         }
     }
 
@@ -562,110 +774,66 @@ class CrimeSpotterApp {
      * Show error message
      */
     showError(message) {
-        console.error('Error:', message);
-        
-        // Create toast notification
-        this.showToast(message, 'error');
+        this.showNotification(message, 'error');
     }
 
     /**
-     * Show success message
+     * Show notification message
      */
-    showSuccess(message) {
-        console.log('Success:', message);
-        
-        // Create toast notification
-        this.showToast(message, 'success');
-    }
-    
-    /**
-     * Show toast notification
-     */
-    showToast(message, type = 'info') {
-        // Create toast element if it doesn't exist
-        let toastContainer = document.getElementById('toast-container');
-        if (!toastContainer) {
-            toastContainer = document.createElement('div');
-            toastContainer.id = 'toast-container';
-            toastContainer.style.cssText = `
-                position: fixed;
-                top: 80px;
-                right: 20px;
-                z-index: 10000;
-            `;
-            document.body.appendChild(toastContainer);
+    showNotification(message, type = 'info') {
+        // Create notification element if it doesn't exist
+        let notification = document.getElementById('map-notification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'map-notification';
+            notification.className = 'map-notification';
+            const mapContainer = document.querySelector('.map-container');
+            if (mapContainer) {
+                mapContainer.appendChild(notification);
+            }
         }
         
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        toast.style.cssText = `
-            background: ${type === 'error' ? '#dc2626' : type === 'success' ? '#10b981' : '#3b82f6'};
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            animation: slideIn 0.3s ease;
-            min-width: 250px;
-        `;
-        toast.textContent = message;
+        // Set message and type
+        notification.textContent = message;
+        notification.className = `map-notification ${type}`;
+        notification.style.display = 'block';
         
-        toastContainer.appendChild(toast);
-        
-        // Auto-remove after 3 seconds
+        // Auto-hide after 3 seconds
         setTimeout(() => {
-            toast.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => {
-                toast.remove();
-            }, 300);
+            notification.style.display = 'none';
         }, 3000);
     }
 
     /**
-     * Handle URL parameters on page load
+     * Format date for display
      */
-    handleUrlParameters() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const lat = urlParams.get('lat');
-        const lng = urlParams.get('lng');
-
-        if (lat && lng) {
-            const latitude = parseFloat(lat);
-            const longitude = parseFloat(lng);
-            
-            if (!isNaN(latitude) && !isNaN(longitude)) {
-                this.goToLocation(latitude, longitude, 'Shared Location');
-            }
+    formatDate(dateString) {
+        if (!dateString) return 'Unknown';
+        
+        try {
+            const [year, month] = dateString.split('-');
+            const date = new Date(year, month - 1);
+            return date.toLocaleDateString('en-GB', { 
+                year: 'numeric', 
+                month: 'long' 
+            });
+        } catch (error) {
+            return dateString;
         }
+    }
+
+    /**
+     * Go to a specific coordinate
+     */
+    async goToLocation(lat, lng, zoom = 14) {
+        this.map.setView([lat, lng], zoom);
+        const data = await this.loadCrimes(lat, lng);
+        this.lastUpdateLocation = L.latLng(lat, lng);
+        this.hasMovedSinceUpdate = false;
+        this.hideUpdateButton();
+        return data;
     }
 }
 
-// Add animations CSS
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialize the application
-new CrimeSpotterApp();
+// Export for use in other modules
+window.CrimeMap = CrimeMap;

@@ -49,7 +49,11 @@ class CrimeSpotterApp {
             
         } catch (error) {
             console.error('❌ Failed to initialize app:', error);
-            this.showError('Failed to initialize the application. Please refresh the page.');
+            // Set loading text to error state
+            const totalCrimesElement = document.getElementById('total-crimes');
+            if (totalCrimesElement) {
+                totalCrimesElement.textContent = 'Error';
+            }
         }
     }
 
@@ -57,18 +61,42 @@ class CrimeSpotterApp {
      * Initialize the crime map
      */
     initializeMap() {
+        // Check if CrimeMap class is available
         if (typeof CrimeMap === 'undefined') {
+            console.error('CrimeMap class not loaded - checking if map.js is loaded');
+            
+            // Check if Leaflet is loaded
+            if (typeof L === 'undefined') {
+                console.error('Leaflet library not loaded!');
+            }
+            
             throw new Error('CrimeMap class not loaded');
         }
 
-        this.crimeMap = new CrimeMap(window.CRIMESPOTTER_CONFIG);
-        
-        // Listen for crime data updates
-        this.crimeMap.onDataLoaded = (data) => {
-            this.updateCrimeStatistics(data);
-        };
-        
-        console.log('🗺️ Map initialized');
+        // Check if config is available
+        if (!window.CRIMESPOTTER_CONFIG) {
+            console.error('CrimeSpotter config not found!');
+            window.CRIMESPOTTER_CONFIG = {
+                apiBaseUrl: '/api',
+                defaultDate: '2025-06',
+                mapCenter: [54.5, -2.0],
+                mapZoom: 6
+            };
+        }
+
+        try {
+            this.crimeMap = new CrimeMap(window.CRIMESPOTTER_CONFIG);
+            
+            // Set up the callback for when data is loaded
+            this.crimeMap.onDataLoaded = (data) => {
+                this.updateCrimeStatistics(data);
+            };
+            
+            console.log('🗺️ Map initialized successfully');
+        } catch (error) {
+            console.error('Error initializing map:', error);
+            throw error;
+        }
     }
 
     /**
@@ -101,9 +129,6 @@ class CrimeSpotterApp {
         
         // Share functionality
         this.setupShareButton();
-        
-        // Navigation
-        this.setupNavigation();
         
         console.log('🔡 Event listeners setup complete');
     }
@@ -140,7 +165,7 @@ class CrimeSpotterApp {
 
             // Hide suggestions when clicking outside
             document.addEventListener('click', (e) => {
-                if (!searchInput.contains(e.target) && !suggestionsContainer?.contains(e.target)) {
+                if (!searchInput.contains(e.target) && suggestionsContainer && !suggestionsContainer.contains(e.target)) {
                     this.hideSuggestions();
                 }
             });
@@ -203,15 +228,6 @@ class CrimeSpotterApp {
     }
 
     /**
-     * Setup navigation
-     */
-    setupNavigation() {
-        // Navigation links now use actual routes, no smooth scrolling needed
-        // Active state is handled by the server/page load
-        console.log('Navigation setup complete');
-    }
-
-    /**
      * Setup header scroll effects
      */
     setupHeaderEffects() {
@@ -268,13 +284,6 @@ class CrimeSpotterApp {
                 option.textContent = `${dateObj.date}${index === 0 ? ' (Latest)' : ''}`;
                 dateSelector.appendChild(option);
             });
-            
-            // Add change event listener
-            dateSelector.addEventListener('change', (e) => {
-                if (this.crimeMap) {
-                    this.crimeMap.loadCrimesForCurrentView(e.target.value);
-                }
-            });
         }
     }
 
@@ -288,19 +297,27 @@ class CrimeSpotterApp {
             totalCrimesElement.textContent = 'Loading...';
         }
         
-        // Load crimes for London by default
-        if (this.crimeMap) {
-            const data = await this.crimeMap.loadCrimes(51.5074, -0.1278); // London coordinates
-            this.updateLocationInfo('London', 51.5074, -0.1278);
-            
-            // Update the initial statistics
-            if (data) {
-                this.updateCrimeStatistics(data);
-            } else {
-                // If no data, set to 0
-                if (totalCrimesElement) {
-                    totalCrimesElement.textContent = '0';
+        try {
+            // Load crimes for London by default
+            if (this.crimeMap) {
+                const data = await this.crimeMap.loadCrimes(51.5074, -0.1278); // London coordinates
+                this.updateLocationInfo('London', 51.5074, -0.1278);
+                
+                // Update the initial statistics
+                if (data && data.success) {
+                    this.updateCrimeStatistics(data);
+                } else {
+                    // If no data or error, set to 0
+                    if (totalCrimesElement) {
+                        totalCrimesElement.textContent = '0';
+                    }
                 }
+            }
+        } catch (error) {
+            console.error('Error loading initial data:', error);
+            // On error, set to 0
+            if (totalCrimesElement) {
+                totalCrimesElement.textContent = '0';
             }
         }
     }
@@ -458,11 +475,15 @@ class CrimeSpotterApp {
     /**
      * Go to a specific location
      */
-    goToLocation(lat, lng, name) {
+    async goToLocation(lat, lng, name) {
         if (this.crimeMap) {
-            this.crimeMap.goToLocation(lat, lng);
-            this.updateLocationInfo(name, lat, lng);
-            console.log(`📍 Navigated to ${name} (${lat}, ${lng})`);
+            try {
+                await this.crimeMap.goToLocation(lat, lng);
+                this.updateLocationInfo(name, lat, lng);
+                console.log(`📍 Navigated to ${name} (${lat}, ${lng})`);
+            } catch (error) {
+                console.error('Error going to location:', error);
+            }
         }
     }
 
@@ -486,7 +507,12 @@ class CrimeSpotterApp {
      * Share current location
      */
     async shareLocation() {
-        const center = this.crimeMap?.map.getCenter();
+        if (!this.crimeMap || !this.crimeMap.map) {
+            this.showError('Map not initialized');
+            return;
+        }
+        
+        const center = this.crimeMap.map.getCenter();
         
         if (!center) {
             this.showError('No location to share');
@@ -539,8 +565,6 @@ class CrimeSpotterApp {
      */
     showError(message) {
         console.error('Error:', message);
-        
-        // Create toast notification
         this.showToast(message, 'error');
     }
 
@@ -549,8 +573,6 @@ class CrimeSpotterApp {
      */
     showSuccess(message) {
         console.log('Success:', message);
-        
-        // Create toast notification
         this.showToast(message, 'success');
     }
     
@@ -610,7 +632,9 @@ class CrimeSpotterApp {
             const longitude = parseFloat(lng);
             
             if (!isNaN(latitude) && !isNaN(longitude)) {
-                this.goToLocation(latitude, longitude, 'Shared Location');
+                setTimeout(() => {
+                    this.goToLocation(latitude, longitude, 'Shared Location');
+                }, 1000); // Delay to ensure map is ready
             }
         }
     }
@@ -643,5 +667,18 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Initialize the application
-new CrimeSpotterApp();
+// Initialize the application - ensure it only runs once
+if (!window.crimeSpotterAppInitialized) {
+    window.crimeSpotterAppInitialized = true;
+    
+    // Wait for all resources to load
+    if (document.readyState === 'complete') {
+        console.log('Page already loaded - Starting CrimeSpotter App');
+        new CrimeSpotterApp();
+    } else {
+        window.addEventListener('load', () => {
+            console.log('Page fully loaded - Starting CrimeSpotter App');
+            new CrimeSpotterApp();
+        });
+    }
+}
