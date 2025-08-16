@@ -1,6 +1,6 @@
 /**
- * Crime Heat Map Implementation for CrimeSpotter UK
- * Add this to your map.js file (replace or enhance existing CrimeMap class)
+ * CrimeSpotter UK - Complete Interactive Map Module with Heatmap Support
+ * This is the COMPLETE working version - replace your entire map.js with this
  */
 
 class CrimeMap {
@@ -14,15 +14,16 @@ class CrimeMap {
         this.isLoading = false;
         this.lastUpdateLocation = null;
         this.hasMovedSinceUpdate = false;
-        this.viewMode = 'heatmap'; // 'heatmap' or 'markers'
-        this.onDataLoaded = null;
+        this.onDataLoaded = null; // Callback function for when data is loaded
+        this.viewMode = 'markers'; // Default to markers view
+        this.heatmapIntensity = 0.5;
         
         // Crime category colors and icons
         this.crimeStyles = {
             'burglary': { color: '#dc2626', icon: '🏠', weight: 2.0 },
-            'violent-crime': { color: '#be123c', icon: '⚠️', weight: 2.5 },
             'theft-from-the-person': { color: '#ea580c', icon: '👤', weight: 1.8 },
             'vehicle-crime': { color: '#d97706', icon: '🚗', weight: 1.5 },
+            'violent-crime': { color: '#be123c', icon: '⚠️', weight: 2.5 },
             'anti-social-behaviour': { color: '#7c3aed', icon: '📢', weight: 1.0 },
             'drugs': { color: '#059669', icon: '💊', weight: 1.5 },
             'robbery': { color: '#b91c1c', icon: '💰', weight: 2.5 },
@@ -31,7 +32,7 @@ class CrimeMap {
             'other-theft': { color: '#6b7280', icon: '📦', weight: 1.3 },
             'bicycle-theft': { color: '#0891b2', icon: '🚲', weight: 1.0 },
             'shoplifting': { color: '#9333ea', icon: '🛒', weight: 1.0 },
-            'other-crime': { color: '#374151', icon: '❓', weight: 1.0 }
+            'other-crime': { color: '#374155', icon: '❓', weight: 1.0 }
         };
         
         this.init();
@@ -41,25 +42,11 @@ class CrimeMap {
      * Initialize the map
      */
     init() {
-        this.loadHeatmapPlugin();
         this.createMap();
         this.setupEventListeners();
-        this.addMapControls();
-        console.log('🗺️ Crime map initialized with heatmap support');
-    }
-
-    /**
-     * Load Leaflet.heat plugin
-     */
-    loadHeatmapPlugin() {
-        if (typeof L.heatLayer === 'undefined') {
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js';
-            script.onload = () => {
-                console.log('✅ Heatmap plugin loaded');
-            };
-            document.head.appendChild(script);
-        }
+        this.addUpdateLocationButton();
+        this.loadHeatmapPlugin();
+        console.log('🗺️ Crime map initialized');
     }
 
     /**
@@ -92,7 +79,7 @@ class CrimeMap {
             position: 'bottomright'
         }).addTo(this.map);
 
-        // Initialize marker cluster group (for marker view)
+        // Initialize marker cluster group
         this.crimeMarkers = L.markerClusterGroup({
             chunkedLoading: true,
             maxClusterRadius: 50,
@@ -118,8 +105,6 @@ class CrimeMap {
 
         this.map.on('zoomend', () => {
             this.onMapMove();
-            // Adjust heatmap radius based on zoom
-            this.adjustHeatmapRadius();
         });
 
         // Store initial location
@@ -127,9 +112,49 @@ class CrimeMap {
     }
 
     /**
-     * Add map controls for view mode switching
+     * Handle map movement
      */
-    addMapControls() {
+    onMapMove() {
+        this.updateLocationInfo();
+        
+        // Check if map has moved significantly
+        const currentCenter = this.map.getCenter();
+        if (this.lastUpdateLocation) {
+            const distance = this.lastUpdateLocation.distanceTo(currentCenter);
+            // If moved more than 500 meters, show the update button
+            if (distance > 500) {
+                this.hasMovedSinceUpdate = true;
+                this.showUpdateButton();
+            }
+        }
+    }
+
+    /**
+     * Load Leaflet.heat plugin
+     */
+    loadHeatmapPlugin() {
+        // Check if already loaded
+        if (typeof L.heatLayer !== 'undefined') {
+            console.log('✅ Heatmap plugin already loaded');
+            this.addViewModeControls();
+            return;
+        }
+        
+        // Wait a moment for the script from HTML to load
+        setTimeout(() => {
+            if (typeof L.heatLayer !== 'undefined') {
+                console.log('✅ Heatmap plugin loaded from HTML');
+                this.addViewModeControls();
+            } else {
+                console.log('⚠️ Heatmap plugin not available, view mode controls disabled');
+            }
+        }, 1000);
+    }
+
+    /**
+     * Add view mode controls to the map
+     */
+    addViewModeControls() {
         // Create custom control for view mode
         const ViewControl = L.Control.extend({
             options: {
@@ -140,23 +165,56 @@ class CrimeMap {
                 const container = L.DomUtil.create('div', 'view-mode-control');
                 container.style.cssText = `
                     background: white;
-                    padding: 10px;
+                    padding: 8px;
                     border-radius: 8px;
                     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
                     display: flex;
-                    gap: 5px;
+                    gap: 4px;
                 `;
                 
                 container.innerHTML = `
-                    <button id="heatmap-view-btn" class="view-btn active" title="Heat Map View">
-                        <i class="fas fa-fire"></i>
-                        <span>Heat Map</span>
-                    </button>
-                    <button id="markers-view-btn" class="view-btn" title="Markers View">
+                    <button id="markers-view-btn" class="view-btn active" title="Markers View" style="
+                        padding: 6px 10px;
+                        background: #3b82f6;
+                        color: white;
+                        border: 1px solid #3b82f6;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 12px;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                    ">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Points</span>
                     </button>
-                    <button id="hybrid-view-btn" class="view-btn" title="Hybrid View">
+                    <button id="heatmap-view-btn" class="view-btn" title="Heat Map View" style="
+                        padding: 6px 10px;
+                        background: white;
+                        color: #64748b;
+                        border: 1px solid #e2e8f0;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 12px;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                    ">
+                        <i class="fas fa-fire"></i>
+                        <span>Heat</span>
+                    </button>
+                    <button id="hybrid-view-btn" class="view-btn" title="Hybrid View" style="
+                        padding: 6px 10px;
+                        background: white;
+                        color: #64748b;
+                        border: 1px solid #e2e8f0;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 12px;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                    ">
                         <i class="fas fa-layer-group"></i>
                         <span>Both</span>
                     </button>
@@ -173,136 +231,29 @@ class CrimeMap {
         // Add control to map
         new ViewControl().addTo(this.map);
 
-        // Add CSS for view buttons
-        this.addViewControlStyles();
-
-        // Setup view mode buttons after they're added to DOM
+        // Setup button handlers
         setTimeout(() => {
             this.setupViewModeButtons();
         }, 100);
-
-        // Add intensity control
-        this.addIntensityControl();
-    }
-
-    /**
-     * Add intensity control for heatmap
-     */
-    addIntensityControl() {
-        const IntensityControl = L.Control.extend({
-            options: {
-                position: 'topright'
-            },
-
-            onAdd: (map) => {
-                const container = L.DomUtil.create('div', 'intensity-control');
-                container.style.cssText = `
-                    background: white;
-                    padding: 10px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                    margin-top: 10px;
-                    display: ${this.viewMode === 'markers' ? 'none' : 'block'};
-                `;
-                
-                container.innerHTML = `
-                    <div style="font-size: 12px; font-weight: 600; margin-bottom: 5px;">
-                        <i class="fas fa-adjust"></i> Intensity
-                    </div>
-                    <input type="range" id="intensity-slider" min="0.1" max="1" step="0.1" value="0.5" 
-                           style="width: 150px;">
-                    <span id="intensity-value" style="font-size: 11px; margin-left: 5px;">50%</span>
-                `;
-                
-                L.DomEvent.disableClickPropagation(container);
-                L.DomEvent.disableScrollPropagation(container);
-                
-                return container;
-            }
-        });
-
-        new IntensityControl().addTo(this.map);
-
-        // Setup intensity slider
-        setTimeout(() => {
-            const slider = document.getElementById('intensity-slider');
-            const value = document.getElementById('intensity-value');
-            
-            if (slider) {
-                slider.addEventListener('input', (e) => {
-                    const intensity = parseFloat(e.target.value);
-                    value.textContent = `${Math.round(intensity * 100)}%`;
-                    this.updateHeatmapIntensity(intensity);
-                });
-            }
-        }, 100);
-    }
-
-    /**
-     * Add CSS styles for view controls
-     */
-    addViewControlStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
-            .view-btn {
-                padding: 8px 12px;
-                background: white;
-                border: 1px solid #e2e8f0;
-                border-radius: 6px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                font-size: 13px;
-                font-weight: 500;
-                color: #64748b;
-                transition: all 0.2s;
-            }
-            
-            .view-btn:hover {
-                background: #f8fafc;
-                color: #475569;
-            }
-            
-            .view-btn.active {
-                background: #3b82f6;
-                color: white;
-                border-color: #3b82f6;
-            }
-            
-            .view-btn i {
-                font-size: 14px;
-            }
-            
-            @media (max-width: 768px) {
-                .view-btn span {
-                    display: none;
-                }
-                .view-btn {
-                    padding: 8px 10px;
-                }
-            }
-        `;
-        document.head.appendChild(style);
     }
 
     /**
      * Setup view mode button handlers
      */
     setupViewModeButtons() {
-        const heatmapBtn = document.getElementById('heatmap-view-btn');
         const markersBtn = document.getElementById('markers-view-btn');
+        const heatmapBtn = document.getElementById('heatmap-view-btn');
         const hybridBtn = document.getElementById('hybrid-view-btn');
-
-        if (heatmapBtn) {
-            heatmapBtn.addEventListener('click', () => {
-                this.setViewMode('heatmap');
-            });
-        }
 
         if (markersBtn) {
             markersBtn.addEventListener('click', () => {
                 this.setViewMode('markers');
+            });
+        }
+
+        if (heatmapBtn) {
+            heatmapBtn.addEventListener('click', () => {
+                this.setViewMode('heatmap');
             });
         }
 
@@ -321,18 +272,16 @@ class CrimeMap {
         
         // Update button states
         document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.classList.remove('active');
+            btn.style.background = 'white';
+            btn.style.color = '#64748b';
+            btn.style.borderColor = '#e2e8f0';
         });
         
-        const activeBtn = document.getElementById(`${mode === 'hybrid' ? 'hybrid' : mode}-view-btn`);
+        const activeBtn = document.getElementById(`${mode}-view-btn`);
         if (activeBtn) {
-            activeBtn.classList.add('active');
-        }
-
-        // Show/hide intensity control
-        const intensityControl = document.querySelector('.intensity-control');
-        if (intensityControl) {
-            intensityControl.style.display = mode === 'markers' ? 'none' : 'block';
+            activeBtn.style.background = '#3b82f6';
+            activeBtn.style.color = 'white';
+            activeBtn.style.borderColor = '#3b82f6';
         }
 
         // Re-display crimes with new view mode
@@ -343,7 +292,230 @@ class CrimeMap {
     }
 
     /**
-     * Display crimes on the map (heatmap or markers)
+     * Add update location button to the map
+     */
+    addUpdateLocationButton() {
+        // Create custom control for update button
+        const UpdateControl = L.Control.extend({
+            options: {
+                position: 'topleft'
+            },
+
+            onAdd: (map) => {
+                const container = L.DomUtil.create('div', 'update-location-control');
+                container.innerHTML = `
+                    <button id="update-location-btn" class="update-location-btn" style="display: none;">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Update This Location</span>
+                    </button>
+                `;
+                
+                // Prevent map interactions when clicking the button
+                L.DomEvent.disableClickPropagation(container);
+                L.DomEvent.disableScrollPropagation(container);
+                
+                return container;
+            }
+        });
+
+        // Add control to map
+        new UpdateControl().addTo(this.map);
+
+        // Add click handler after button is added to DOM
+        setTimeout(() => {
+            const updateBtn = document.getElementById('update-location-btn');
+            if (updateBtn) {
+                updateBtn.addEventListener('click', () => {
+                    this.updateCurrentLocation();
+                });
+            }
+        }, 100);
+    }
+
+    /**
+     * Show the update button
+     */
+    showUpdateButton() {
+        const updateBtn = document.getElementById('update-location-btn');
+        if (updateBtn && this.hasMovedSinceUpdate) {
+            updateBtn.style.display = 'flex';
+            updateBtn.classList.add('pulse');
+            
+            // Remove pulse animation after 2 seconds
+            setTimeout(() => {
+                updateBtn.classList.remove('pulse');
+            }, 2000);
+        }
+    }
+
+    /**
+     * Hide the update button
+     */
+    hideUpdateButton() {
+        const updateBtn = document.getElementById('update-location-btn');
+        if (updateBtn) {
+            updateBtn.style.display = 'none';
+        }
+    }
+
+    /**
+     * Update crime data for current map location
+     */
+    async updateCurrentLocation() {
+        const center = this.map.getCenter();
+        const updateBtn = document.getElementById('update-location-btn');
+        
+        // Update button state
+        if (updateBtn) {
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Loading...</span>';
+        }
+        
+        try {
+            const data = await this.loadCrimes(center.lat, center.lng);
+            this.lastUpdateLocation = center;
+            this.hasMovedSinceUpdate = false;
+            this.hideUpdateButton();
+            
+            // Show success message
+            this.showNotification('Location updated successfully!', 'success');
+        } catch (error) {
+            console.error('Failed to update location:', error);
+            this.showNotification('Failed to update location. Please try again.', 'error');
+        } finally {
+            // Restore button state
+            if (updateBtn) {
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = '<i class="fas fa-sync-alt"></i> <span>Update This Location</span>';
+            }
+        }
+    }
+
+    /**
+     * Setup event listeners
+     */
+    setupEventListeners() {
+        // Controls toggle
+        const controlsToggle = document.getElementById('controls-toggle');
+        if (controlsToggle) {
+            controlsToggle.addEventListener('click', () => {
+                this.toggleControls();
+            });
+        }
+
+        // Date selector
+        const dateSelector = document.getElementById('date-selector');
+        if (dateSelector) {
+            // Remove any existing listeners first
+            const newDateSelector = dateSelector.cloneNode(true);
+            dateSelector.parentNode.replaceChild(newDateSelector, dateSelector);
+            
+            newDateSelector.addEventListener('change', (e) => {
+                this.loadCrimesForCurrentView(e.target.value);
+            });
+        }
+
+        // Crime type filters
+        const crimeFilters = document.getElementById('crime-filters');
+        if (crimeFilters) {
+            crimeFilters.addEventListener('change', (e) => {
+                if (e.target.type === 'checkbox') {
+                    this.handleFilterChange(e.target);
+                }
+            });
+        }
+
+        // Map controls
+        const myLocationBtn = document.getElementById('my-location-btn');
+        if (myLocationBtn) {
+            myLocationBtn.addEventListener('click', () => {
+                this.goToUserLocation();
+            });
+        }
+
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', () => {
+                this.toggleFullscreen();
+            });
+        }
+
+        // Add manual refresh button
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.updateCurrentLocation();
+            });
+        }
+    }
+
+    /**
+     * Load crimes for a specific location
+     */
+    async loadCrimes(lat, lng, date = null) {
+        if (this.isLoading) return null;
+        
+        this.showLoading(true);
+        this.isLoading = true;
+        
+        let returnData = null;
+
+        try {
+            const params = new URLSearchParams({
+                lat: lat.toString(),
+                lng: lng.toString()
+            });
+
+            if (date) {
+                params.append('date', date);
+            }
+
+            const response = await fetch(`${this.config.apiBaseUrl}/crimes?${params}`);
+            const data = await response.json();
+
+            if (data.success) {
+                this.currentCrimes = data.crimes || [];
+                this.displayCrimes(this.currentCrimes);
+                this.updateStatistics(data);
+                this.updateFilters(data.categories || {});
+                
+                // Update location display
+                this.updateLocationDisplay(lat, lng);
+                
+                // Fit map to bounds if we have crime data
+                if (data.bounds && this.currentCrimes.length > 0) {
+                    this.fitToBounds(data.bounds);
+                }
+                
+                // Call the callback if it exists
+                if (this.onDataLoaded && typeof this.onDataLoaded === 'function') {
+                    this.onDataLoaded(data);
+                }
+                
+                returnData = data;
+                console.log(`✅ Loaded ${this.currentCrimes.length} crimes`);
+            } else {
+                throw new Error(data.error || 'Failed to load crime data');
+            }
+
+        } catch (error) {
+            console.error('❌ Error loading crimes:', error);
+            this.showError('Failed to load crime data. Please try again.');
+            
+            // Still call callback with error state
+            if (this.onDataLoaded && typeof this.onDataLoaded === 'function') {
+                this.onDataLoaded({ success: false, count: 0 });
+            }
+        } finally {
+            this.showLoading(false);
+            this.isLoading = false;
+        }
+        
+        return returnData;
+    }
+
+    /**
+     * Display crimes on the map
      */
     displayCrimes(crimes) {
         // Clear existing layers
@@ -351,10 +523,10 @@ class CrimeMap {
             this.map.removeLayer(this.heatmapLayer);
             this.heatmapLayer = null;
         }
-        if (this.crimeMarkers) {
-            this.map.removeLayer(this.crimeMarkers);
-            this.crimeMarkers.clearLayers();
-        }
+        
+        // Clear markers
+        this.crimeMarkers.clearLayers();
+        this.map.removeLayer(this.crimeMarkers);
 
         if (!crimes || crimes.length === 0) {
             console.log('No crimes to display');
@@ -376,15 +548,17 @@ class CrimeMap {
         // Display based on view mode
         switch (this.viewMode) {
             case 'heatmap':
-                this.displayHeatmap(filteredCrimes);
+                this.displayAsHeatmap(filteredCrimes);
                 break;
             case 'markers':
-                this.displayMarkers(filteredCrimes);
+                this.displayAsMarkers(filteredCrimes);
                 break;
             case 'hybrid':
-                this.displayHeatmap(filteredCrimes);
-                this.displayMarkers(filteredCrimes);
+                this.displayAsHeatmap(filteredCrimes);
+                this.displayAsMarkers(filteredCrimes);
                 break;
+            default:
+                this.displayAsMarkers(filteredCrimes);
         }
 
         console.log(`📍 Displayed ${filteredCrimes.length} of ${crimes.length} crimes in ${this.viewMode} view`);
@@ -397,11 +571,11 @@ class CrimeMap {
     /**
      * Display crimes as heatmap
      */
-    displayHeatmap(crimes) {
-        // Wait for heatmap plugin to load
+    displayAsHeatmap(crimes) {
+        // Check if heatmap plugin is loaded
         if (typeof L.heatLayer === 'undefined') {
-            console.log('Waiting for heatmap plugin...');
-            setTimeout(() => this.displayHeatmap(crimes), 100);
+            console.log('Heatmap plugin not loaded, falling back to markers');
+            this.displayAsMarkers(crimes);
             return;
         }
 
@@ -418,11 +592,11 @@ class CrimeMap {
                 return null;
             }
             
-            // Get weight based on crime severity
+            // Get weight based on crime type
             const weight = this.crimeStyles[crime.category]?.weight || 1.0;
             
             // Return [lat, lng, intensity]
-            return [lat, lng, weight];
+            return [lat, lng, weight * this.heatmapIntensity];
         }).filter(point => point !== null);
 
         if (heatData.length === 0) {
@@ -430,10 +604,17 @@ class CrimeMap {
             return;
         }
 
-        // Create heatmap layer with dynamic configuration
+        // Calculate dynamic radius based on zoom
         const zoom = this.map.getZoom();
-        const radius = this.calculateHeatmapRadius(zoom);
+        let radius = 25;
         
+        if (zoom < 10) radius = 40;
+        else if (zoom < 12) radius = 30;
+        else if (zoom < 14) radius = 20;
+        else if (zoom < 16) radius = 15;
+        else radius = 10;
+
+        // Create heatmap layer
         this.heatmapLayer = L.heatLayer(heatData, {
             radius: radius,
             blur: 15,
@@ -441,10 +622,10 @@ class CrimeMap {
             max: 3.0,
             gradient: {
                 0.0: 'blue',
-                0.2: 'cyan',
-                0.4: 'lime',
-                0.6: 'yellow',
-                0.8: 'orange',
+                0.1: 'cyan',
+                0.25: 'lime',
+                0.5: 'yellow',
+                0.75: 'orange',
                 1.0: 'red'
             }
         });
@@ -456,52 +637,19 @@ class CrimeMap {
     /**
      * Display crimes as markers
      */
-    displayMarkers(crimes) {
+    displayAsMarkers(crimes) {
+        // Create markers for each crime
         const markers = crimes
             .map(crime => this.createCrimeMarker(crime))
             .filter(marker => marker !== null);
 
+        // Add markers to cluster group
         if (markers.length > 0) {
             this.crimeMarkers.addLayers(markers);
             this.map.addLayer(this.crimeMarkers);
         }
     }
 
-    /**
-     * Calculate heatmap radius based on zoom level
-     */
-    calculateHeatmapRadius(zoom) {
-        // Adjust radius based on zoom level for better visualization
-        const baseRadius = 25;
-        const zoomFactor = Math.pow(2, 15 - zoom);
-        return Math.max(10, Math.min(50, baseRadius * zoomFactor));
-    }
-
-    /**
-     * Adjust heatmap radius when zoom changes
-     */
-    adjustHeatmapRadius() {
-        if (this.heatmapLayer && this.viewMode !== 'markers') {
-            // Re-create heatmap with new radius
-            this.displayCrimes(this.currentCrimes);
-        }
-    }
-
-    /**
-     * Update heatmap intensity
-     */
-    updateHeatmapIntensity(intensity) {
-        if (this.heatmapLayer) {
-            // Re-create heatmap with new intensity
-            // Store the intensity value for reuse
-            this.heatmapIntensity = intensity;
-            this.displayCrimes(this.currentCrimes);
-        }
-    }
-
-    // ... Include all other existing methods from your current CrimeMap class ...
-    // (loadCrimes, createCrimeMarker, handleFilterChange, etc.)
-    
     /**
      * Create a marker for a crime incident
      */
@@ -567,6 +715,395 @@ class CrimeMap {
     }
 
     /**
+     * Check if a crime should be displayed based on current filters
+     */
+    shouldShowCrime(crime) {
+        if (this.activeFilters.has('all')) {
+            return true;
+        }
+        
+        return this.activeFilters.has(crime.category);
+    }
+
+    /**
+     * Handle filter checkbox changes
+     */
+    handleFilterChange(checkbox) {
+        const value = checkbox.value;
+        
+        if (value === 'all') {
+            if (checkbox.checked) {
+                // Select all
+                this.activeFilters.clear();
+                this.activeFilters.add('all');
+                // Check all other checkboxes
+                document.querySelectorAll('#crime-filters input[type="checkbox"]').forEach(cb => {
+                    cb.checked = true;
+                });
+            } else {
+                // If unchecking "all", uncheck everything
+                this.activeFilters.clear();
+                document.querySelectorAll('#crime-filters input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                });
+            }
+        } else {
+            if (checkbox.checked) {
+                // Remove "all" if it was selected
+                if (this.activeFilters.has('all')) {
+                    this.activeFilters.clear();
+                    const allCheckbox = document.querySelector('#crime-filters input[value="all"]');
+                    if (allCheckbox) allCheckbox.checked = false;
+                }
+                this.activeFilters.add(value);
+            } else {
+                this.activeFilters.delete(value);
+            }
+            
+            // Check if all individual filters are selected
+            const allFilters = Array.from(document.querySelectorAll('#crime-filters input[type="checkbox"]:not([value="all"])'));
+            const allChecked = allFilters.every(cb => cb.checked);
+            
+            if (allChecked && allFilters.length > 0) {
+                // If all individual filters are checked, check "all" as well
+                this.activeFilters.clear();
+                this.activeFilters.add('all');
+                const allCheckbox = document.querySelector('#crime-filters input[value="all"]');
+                if (allCheckbox) allCheckbox.checked = true;
+                allFilters.forEach(cb => cb.checked = true);
+            } else if (this.activeFilters.size === 0) {
+                // If no filters selected, select all
+                this.activeFilters.add('all');
+                const allCheckbox = document.querySelector('#crime-filters input[value="all"]');
+                if (allCheckbox) allCheckbox.checked = true;
+                document.querySelectorAll('#crime-filters input[type="checkbox"]').forEach(cb => {
+                    cb.checked = true;
+                });
+            }
+        }
+
+        // Re-display crimes with new filters
+        this.displayCrimes(this.currentCrimes);
+        console.log('🔍 Applied filters:', Array.from(this.activeFilters));
+    }
+
+    /**
+     * Update crime type filters based on available data
+     */
+    updateFilters(categories) {
+        const filtersContainer = document.getElementById('crime-filters');
+        if (!filtersContainer) return;
+
+        // Store the current filter state before updating
+        const currentActiveFilters = new Set(this.activeFilters);
+
+        // Keep the "All Crimes" filter and update its count
+        const allFilter = filtersContainer.querySelector('input[value="all"]');
+        const allCount = filtersContainer.querySelector('#count-all');
+        
+        let totalCount = 0;
+        Object.values(categories).forEach(count => totalCount += count);
+        
+        if (allCount) {
+            allCount.textContent = totalCount;
+        }
+
+        // Remove existing category filters (except "all")
+        const existingFilters = filtersContainer.querySelectorAll('.filter-item:not(:first-child)');
+        existingFilters.forEach(filter => filter.remove());
+
+        // Add new category filters
+        Object.entries(categories)
+            .sort(([,a], [,b]) => b - a) // Sort by count descending
+            .forEach(([category, count]) => {
+                if (count > 0) {
+                    const filterHtml = this.createFilterHtml(category, count);
+                    filtersContainer.insertAdjacentHTML('beforeend', filterHtml);
+                }
+            });
+
+        // Add refresh button if it doesn't exist
+        let refreshContainer = document.querySelector('.filter-refresh');
+        if (!refreshContainer) {
+            refreshContainer = document.createElement('div');
+            refreshContainer.className = 'filter-refresh';
+            refreshContainer.innerHTML = `
+                <button id="filter-refresh-btn">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Apply Filters</span>
+                </button>
+            `;
+            filtersContainer.parentElement.appendChild(refreshContainer);
+            
+            // Add event listener to refresh button
+            document.getElementById('filter-refresh-btn').addEventListener('click', () => {
+                this.displayCrimes(this.currentCrimes);
+                this.showNotification('Filters applied', 'success');
+            });
+        }
+
+        // Restore the filter state
+        this.activeFilters = currentActiveFilters;
+    }
+
+    /**
+     * Create HTML for a filter item
+     */
+    createFilterHtml(category, count) {
+        const style = this.crimeStyles[category] || this.crimeStyles['other-crime'];
+        const displayName = category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        
+        return `
+            <label class="filter-item">
+                <input type="checkbox" value="${category}" ${this.activeFilters.has(category) || this.activeFilters.has('all') ? 'checked' : ''}>
+                <span class="checkmark"></span>
+                <span class="filter-icon" style="color: ${style.color}">${style.icon}</span>
+                <span class="filter-text">${displayName}</span>
+                <span class="filter-count">${count}</span>
+            </label>
+        `;
+    }
+
+    /**
+     * Update statistics panel
+     */
+    updateStatistics(data) {
+        // Update area statistics
+        const areaTotal = document.getElementById('area-total');
+        const areaCommon = document.getElementById('area-common');
+        const areaSafety = document.getElementById('area-safety');
+
+        if (areaTotal) {
+            areaTotal.textContent = data.count || 0;
+        }
+
+        if (areaCommon && data.categories) {
+            const mostCommon = Object.entries(data.categories)
+                .sort(([,a], [,b]) => b - a)[0];
+            
+            if (mostCommon) {
+                const displayName = mostCommon[0].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                areaCommon.textContent = displayName;
+            }
+        }
+
+        if (areaSafety) {
+            // Simple safety score calculation (inverse of crime density)
+            const safetyScore = Math.max(1, Math.min(10, 10 - Math.floor(data.count / 10)));
+            areaSafety.textContent = `${safetyScore}/10`;
+            areaSafety.className = `safety-score ${safetyScore >= 7 ? 'good' : safetyScore >= 4 ? 'medium' : 'poor'}`;
+        }
+    }
+
+    /**
+     * Update filtered crime count display
+     */
+    updateFilteredCount(count) {
+        const areaTotal = document.getElementById('area-total');
+        if (areaTotal) {
+            areaTotal.textContent = count;
+        }
+    }
+    
+    /**
+     * Update area statistics based on filtered crimes
+     */
+    updateAreaStatistics(filteredCrimes) {
+        const areaCommon = document.getElementById('area-common');
+        const areaSafety = document.getElementById('area-safety');
+        
+        if (areaCommon && filteredCrimes.length > 0) {
+            // Calculate most common crime from filtered results
+            const categories = {};
+            filteredCrimes.forEach(crime => {
+                const category = crime.category || 'unknown';
+                categories[category] = (categories[category] || 0) + 1;
+            });
+            
+            const mostCommon = Object.entries(categories)
+                .sort(([,a], [,b]) => b - a)[0];
+            
+            if (mostCommon) {
+                const displayName = mostCommon[0].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                areaCommon.textContent = displayName;
+            }
+        } else if (areaCommon) {
+            areaCommon.textContent = '-';
+        }
+        
+        if (areaSafety) {
+            // Simple safety score calculation based on filtered crimes
+            const count = filteredCrimes.length;
+            const safetyScore = Math.max(1, Math.min(10, 10 - Math.floor(count / 10)));
+            areaSafety.textContent = `${safetyScore}/10`;
+            areaSafety.className = `safety-score ${safetyScore >= 7 ? 'good' : safetyScore >= 4 ? 'medium' : 'poor'}`;
+        }
+    }
+
+    /**
+     * Update location display
+     */
+    updateLocationDisplay(lat, lng) {
+        const locationCoords = document.querySelector('.location-coords');
+        
+        if (locationCoords) {
+            locationCoords.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        }
+    }
+
+    /**
+     * Load crimes for current map view
+     */
+    async loadCrimesForCurrentView(date = null) {
+        const center = this.map.getCenter();
+        const data = await this.loadCrimes(center.lat, center.lng, date);
+        this.lastUpdateLocation = center;
+        this.hasMovedSinceUpdate = false;
+        this.hideUpdateButton();
+        return data;
+    }
+
+    /**
+     * Update location info in sidebar
+     */
+    updateLocationInfo() {
+        const locationInfo = document.getElementById('location-info');
+        if (!locationInfo) return;
+
+        const center = this.map.getCenter();
+        const locationCoords = locationInfo.querySelector('.location-coords');
+
+        if (locationCoords) {
+            locationCoords.textContent = `${center.lat.toFixed(4)}, ${center.lng.toFixed(4)}`;
+        }
+    }
+
+    /**
+     * Go to user's current location
+     */
+    goToUserLocation() {
+        if (!navigator.geolocation) {
+            alert('Geolocation is not supported by this browser.');
+            return;
+        }
+
+        const button = document.getElementById('my-location-btn');
+        if (button) {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                this.map.setView([latitude, longitude], 14);
+                await this.loadCrimes(latitude, longitude);
+                this.lastUpdateLocation = L.latLng(latitude, longitude);
+                this.hasMovedSinceUpdate = false;
+                this.hideUpdateButton();
+                
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-crosshairs"></i>';
+                }
+            },
+            (error) => {
+                console.error('Geolocation error:', error);
+                alert('Unable to get your location. Please try again.');
+                
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-crosshairs"></i>';
+                }
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 300000 // 5 minutes
+            }
+        );
+    }
+
+    /**
+     * Toggle fullscreen mode
+     */
+    toggleFullscreen() {
+        const mapSection = document.querySelector('.map-section');
+        const button = document.getElementById('fullscreen-btn');
+        
+        if (!document.fullscreenElement) {
+            mapSection.requestFullscreen().then(() => {
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-compress"></i>';
+                }
+                // Invalidate map size after fullscreen
+                setTimeout(() => this.map.invalidateSize(), 100);
+            });
+        } else {
+            document.exitFullscreen().then(() => {
+                if (button) {
+                    button.innerHTML = '<i class="fas fa-expand"></i>';
+                }
+                // Invalidate map size after exit fullscreen
+                setTimeout(() => this.map.invalidateSize(), 100);
+            });
+        }
+    }
+
+    /**
+     * Toggle controls sidebar
+     */
+    toggleControls() {
+        const controls = document.getElementById('map-controls');
+        const toggle = document.getElementById('controls-toggle');
+        
+        if (controls && toggle) {
+            controls.classList.toggle('collapsed');
+            const icon = toggle.querySelector('i');
+            
+            if (controls.classList.contains('collapsed')) {
+                icon.className = 'fas fa-chevron-right';
+            } else {
+                icon.className = 'fas fa-chevron-left';
+            }
+            
+            // Invalidate map size when sidebar toggles
+            setTimeout(() => this.map.invalidateSize(), 300);
+        }
+    }
+
+    /**
+     * Fit map to crime data bounds
+     */
+    fitToBounds(bounds) {
+        if (!bounds) return;
+        
+        const leafletBounds = L.latLngBounds(
+            [bounds.south, bounds.west],
+            [bounds.north, bounds.east]
+        );
+        
+        this.map.fitBounds(leafletBounds, {
+            padding: [20, 20],
+            maxZoom: 15
+        });
+    }
+
+    /**
+     * Show/hide loading overlay
+     */
+    showLoading(show) {
+        const loadingOverlay = document.getElementById('map-loading');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = show ? 'flex' : 'none';
+        }
+    }
+
+    /**
+     * Show error message
+     */
+    showError(message) {
+        this.showNotification(message, 'error');
+    }
+
+    /**
      * Show notification message
      */
     showNotification(message, type = 'info') {
@@ -603,6 +1140,36 @@ class CrimeMap {
         setTimeout(() => {
             notification.style.display = 'none';
         }, 3000);
+    }
+
+    /**
+     * Format date for display
+     */
+    formatDate(dateString) {
+        if (!dateString) return 'Unknown';
+        
+        try {
+            const [year, month] = dateString.split('-');
+            const date = new Date(year, month - 1);
+            return date.toLocaleDateString('en-GB', { 
+                year: 'numeric', 
+                month: 'long' 
+            });
+        } catch (error) {
+            return dateString;
+        }
+    }
+
+    /**
+     * Go to a specific coordinate
+     */
+    async goToLocation(lat, lng, zoom = 14) {
+        this.map.setView([lat, lng], zoom);
+        const data = await this.loadCrimes(lat, lng);
+        this.lastUpdateLocation = L.latLng(lat, lng);
+        this.hasMovedSinceUpdate = false;
+        this.hideUpdateButton();
+        return data;
     }
 }
 
