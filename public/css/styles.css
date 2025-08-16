@@ -1306,3 +1306,30 @@ body {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 }
+
+@keyframes slideDown {
+    from {
+        transform: translateX(-50%) translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+.map-notification {
+    position: absolute !important;
+    top: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: 300px !important;
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    z-index: 10000 !important;
+    pointer-events: none !important;
+}
+
+.map-container {
+    position: relative !important;
+}

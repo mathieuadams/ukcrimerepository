@@ -475,7 +475,12 @@ class CrimeMap {
 
             if (data.success) {
                 this.currentCrimes = data.crimes || [];
-                this.displayCrimes(this.currentCrimes);
+                
+                // Use setTimeout to ensure DOM is ready
+                setTimeout(() => {
+                    this.displayCrimes(this.currentCrimes);
+                }, 100);
+                
                 this.updateStatistics(data);
                 this.updateFilters(data.categories || {});
                 
@@ -512,7 +517,8 @@ class CrimeMap {
         }
         
         return returnData;
-    }
+}
+
 
     /**
      * Display crimes on the map
@@ -1112,32 +1118,41 @@ class CrimeMap {
         if (!notification) {
             notification = document.createElement('div');
             notification.id = 'map-notification';
-            notification.className = 'map-notification';
             const mapContainer = document.querySelector('.map-container');
             if (mapContainer) {
                 mapContainer.appendChild(notification);
             }
         }
         
-        // Set message and type
+        // Set message and type with proper styling
         notification.textContent = message;
         notification.className = `map-notification ${type}`;
         notification.style.cssText = `
             position: absolute;
-            bottom: 20px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: ${type === 'error' ? '#dc2626' : type === 'success' ? '#10b981' : '#3b82f6'};
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             z-index: 1000;
             display: block;
+            font-size: 14px;
+            font-weight: 500;
+            max-width: 300px;
+            text-align: center;
+            animation: slideDown 0.3s ease;
         `;
         
+        // Clear any existing timeout
+        if (notification.hideTimeout) {
+            clearTimeout(notification.hideTimeout);
+        }
+        
         // Auto-hide after 3 seconds
-        setTimeout(() => {
+        notification.hideTimeout = setTimeout(() => {
             notification.style.display = 'none';
         }, 3000);
     }
@@ -1175,3 +1190,10 @@ class CrimeMap {
 
 // Export for use in other modules
 window.CrimeMap = CrimeMap;
+
+if (!document.getElementById('notification-styles')) {
+    const styleElement = document.createElement('div');
+    styleElement.id = 'notification-styles';
+    styleElement.innerHTML = notificationStyles;
+    document.head.appendChild(styleElement.firstElementChild);
+}
