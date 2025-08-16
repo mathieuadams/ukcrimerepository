@@ -270,11 +270,29 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- At the bottom of the page, before closing </body> -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-    
-    <!-- Global configuration -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+    <!-- Add this check -->
+    <script>
+    // Wait for heatmap to be fully loaded
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            if (typeof L !== 'undefined' && typeof L.heatLayer !== 'undefined') {
+                console.log('✅ Heatmap plugin is ready');
+            } else {
+                console.error('⚠️ Heatmap plugin not loaded, reloading...');
+                var script = document.createElement('script');
+                script.src = 'https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js';
+                document.head.appendChild(script);
+            }
+        }, 500);
+    });
+    </script>
+
+    <!-- Then your app scripts -->
     <script>
         window.CRIMESPOTTER_CONFIG = {
             apiBaseUrl: '/api',
@@ -283,7 +301,7 @@
             mapZoom: 6
         };
     </script>
-    
+
     <script src="/js/map.js"></script>
     <script src="/js/app.js"></script>
 </body>
