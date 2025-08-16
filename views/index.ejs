@@ -112,19 +112,19 @@
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Crime Statistics - Moved below quick buttons -->
+                    <div class="crime-stats-row" style="margin-top: 2rem; display: flex; justify-content: center; gap: 2rem;">
+                        <div class="stat-card" style="background: white; padding: 1.5rem 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; min-width: 150px;">
+                            <div class="stat-number" id="total-crimes" style="font-size: 2rem; font-weight: 700; color: #667eea;">Loading...</div>
+                            <div class="stat-label" style="color: #64748b; margin-top: 0.5rem;">Crimes This Month</div>
+                        </div>
+                        <div class="stat-card" style="background: white; padding: 1.5rem 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; min-width: 150px;">
+                            <div class="stat-number" style="font-size: 2rem; font-weight: 700; color: #667eea;"><%= recentDate %></div>
+                            <div class="stat-label" style="color: #64748b; margin-top: 0.5rem;">Latest Data</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Floating Stats -->
-        <div class="floating-stats">
-            <div class="stat-card">
-                <div class="stat-number" id="total-crimes">Loading...</div>
-                <div class="stat-label">Crimes This Month</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="latest-update"><%= recentDate %></div>
-                <div class="stat-label">Latest Data</div>
             </div>
         </div>
     </section>

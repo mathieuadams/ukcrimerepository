@@ -465,11 +465,41 @@ class CrimeSpotterApp {
             'glasgow': { name: 'Glasgow', lat: 55.8642, lng: -4.2518 },
             'edinburgh': { name: 'Edinburgh', lat: 55.9533, lng: -3.1883 },
             'cardiff': { name: 'Cardiff', lat: 51.4816, lng: -3.1791 },
-            'belfast': { name: 'Belfast', lat: 54.5973, lng: -5.9301 }
+            'belfast': { name: 'Belfast', lat: 54.5973, lng: -5.9301 },
+            'leicester': { name: 'Leicester', lat: 52.6369, lng: -1.1398 },
+            'coventry': { name: 'Coventry', lat: 52.4068, lng: -1.5197 },
+            'bradford': { name: 'Bradford', lat: 53.7960, lng: -1.7594 },
+            'stoke': { name: 'Stoke-on-Trent', lat: 53.0027, lng: -2.1794 },
+            'wolverhampton': { name: 'Wolverhampton', lat: 52.5865, lng: -2.1288 },
+            'plymouth': { name: 'Plymouth', lat: 50.3755, lng: -4.1427 },
+            'southampton': { name: 'Southampton', lat: 50.9097, lng: -1.4044 },
+            'reading': { name: 'Reading', lat: 51.4543, lng: -0.9781 },
+            'derby': { name: 'Derby', lat: 52.9226, lng: -1.4746 },
+            'brighton': { name: 'Brighton', lat: 50.8225, lng: -0.1372 },
+            'oxford': { name: 'Oxford', lat: 51.7520, lng: -1.2577 },
+            'cambridge': { name: 'Cambridge', lat: 52.2053, lng: 0.1218 },
+            'exeter': { name: 'Exeter', lat: 50.7256, lng: -3.5269 },
+            'york': { name: 'York', lat: 53.9600, lng: -1.0873 },
+            'bath': { name: 'Bath', lat: 51.3811, lng: -2.3590 },
+            'norwich': { name: 'Norwich', lat: 52.6309, lng: 1.2974 },
+            'portsmouth': { name: 'Portsmouth', lat: 50.8198, lng: -1.0880 }
         };
 
         const normalizedQuery = query.toLowerCase().trim();
-        return locations[normalizedQuery] || null;
+        
+        // Try exact match first
+        if (locations[normalizedQuery]) {
+            return locations[normalizedQuery];
+        }
+        
+        // Try partial match (e.g., "Manchester" contains "manchester")
+        for (const [key, value] of Object.entries(locations)) {
+            if (normalizedQuery.includes(key) || key.includes(normalizedQuery)) {
+                return value;
+            }
+        }
+        
+        return null;
     }
 
     /**

@@ -384,6 +384,7 @@ class CrimeMap {
         if (!crimes || crimes.length === 0) {
             console.log('No crimes to display');
             this.showNotification('No crimes found in this area for the selected period', 'info');
+            this.updateFilteredCount(0);
             return;
         }
 
@@ -404,6 +405,9 @@ class CrimeMap {
         
         // Update the count display with filtered count
         this.updateFilteredCount(markers.length);
+        
+        // Update the area statistics with filtered data
+        this.updateAreaStatistics(filteredCrimes);
     }
 
     /**
@@ -413,6 +417,41 @@ class CrimeMap {
         const areaTotal = document.getElementById('area-total');
         if (areaTotal) {
             areaTotal.textContent = count;
+        }
+    }
+    
+    /**
+     * Update area statistics based on filtered crimes
+     */
+    updateAreaStatistics(filteredCrimes) {
+        const areaCommon = document.getElementById('area-common');
+        const areaSafety = document.getElementById('area-safety');
+        
+        if (areaCommon && filteredCrimes.length > 0) {
+            // Calculate most common crime from filtered results
+            const categories = {};
+            filteredCrimes.forEach(crime => {
+                const category = crime.category || 'unknown';
+                categories[category] = (categories[category] || 0) + 1;
+            });
+            
+            const mostCommon = Object.entries(categories)
+                .sort(([,a], [,b]) => b - a)[0];
+            
+            if (mostCommon) {
+                const displayName = mostCommon[0].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                areaCommon.textContent = displayName;
+            }
+        } else if (areaCommon) {
+            areaCommon.textContent = '-';
+        }
+        
+        if (areaSafety) {
+            // Simple safety score calculation based on filtered crimes
+            const count = filteredCrimes.length;
+            const safetyScore = Math.max(1, Math.min(10, 10 - Math.floor(count / 10)));
+            areaSafety.textContent = `${safetyScore}/10`;
+            areaSafety.className = `safety-score ${safetyScore >= 7 ? 'good' : safetyScore >= 4 ? 'medium' : 'poor'}`;
         }
     }
 
@@ -560,6 +599,9 @@ class CrimeMap {
         const filtersContainer = document.getElementById('crime-filters');
         if (!filtersContainer) return;
 
+        // Store the current filter state before updating
+        const currentActiveFilters = new Set(this.activeFilters);
+
         // Keep the "All Crimes" filter and update its count
         const allFilter = filtersContainer.querySelector('input[value="all"]');
         const allCount = filtersContainer.querySelector('#count-all');
@@ -584,6 +626,29 @@ class CrimeMap {
                     filtersContainer.insertAdjacentHTML('beforeend', filterHtml);
                 }
             });
+
+        // Add refresh button if it doesn't exist
+        let refreshContainer = document.querySelector('.filter-refresh');
+        if (!refreshContainer) {
+            refreshContainer = document.createElement('div');
+            refreshContainer.className = 'filter-refresh';
+            refreshContainer.innerHTML = `
+                <button id="filter-refresh-btn">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Apply Filters</span>
+                </button>
+            `;
+            filtersContainer.parentElement.appendChild(refreshContainer);
+            
+            // Add event listener to refresh button
+            document.getElementById('filter-refresh-btn').addEventListener('click', () => {
+                this.displayCrimes(this.currentCrimes);
+                this.showNotification('Filters applied', 'success');
+            });
+        }
+
+        // Restore the filter state
+        this.activeFilters = currentActiveFilters;
     }
 
     /**
