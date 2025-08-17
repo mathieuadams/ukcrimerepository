@@ -150,20 +150,37 @@ app.get('/', async (req, res) => {
     }
 });
 
-// Add these routes to your server.js file, after the home route and before the API routes
-
 /**
- * Statistics page
+ * Browse by City page
  */
-app.get('/statistics', (req, res) => {
+app.get('/cities', (req, res) => {
     try {
-        res.render('statistics', { 
-            title: 'Crime Statistics - CrimeSpotter UK'
+        res.render('cities', { 
+            title: 'Browse by City - CrimeSpotter UK'
         });
     } catch (error) {
-        console.error('Error rendering statistics page:', error);
+        console.error('Error rendering cities page:', error);
         res.status(500).render('error', { 
-            error: 'Unable to load statistics page',
+            error: 'Unable to load cities page',
+            title: 'Error - CrimeSpotter UK'
+        });
+    }
+});
+
+/**
+ * Individual City page
+ */
+app.get('/city/:cityname', async (req, res) => {
+    try {
+        const cityName = req.params.cityname;
+        res.render('city', { 
+            title: `${cityName.charAt(0).toUpperCase() + cityName.slice(1)} Crime Statistics - CrimeSpotter UK`,
+            cityName: cityName
+        });
+    } catch (error) {
+        console.error('Error rendering city page:', error);
+        res.status(500).render('error', { 
+            error: 'Unable to load city page',
             title: 'Error - CrimeSpotter UK'
         });
     }

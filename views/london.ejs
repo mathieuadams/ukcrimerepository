@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>London Crime Statistics - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        .city-header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+        
+        .city-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .city-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .city-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .city-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Tabs Navigation */
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Crime Map */
+        .city-crime-map {
+            height: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        /* Trends Section */
+        .trends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .trend-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .trend-title {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .trend-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0.5rem 0;
+        }
+        
+        .trend-subtitle {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        /* Analytics Charts */
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        /* Crime Table */
+        .crime-table {
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .crime-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .crime-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #64748b;
+        }
+        
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Dynamic Content */
+        .dynamic-content {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+        
+        .dynamic-content h3 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .dynamic-content p {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        
+        .highlight {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .city-title {
+                font-size: 2rem;
+            }
+            
+            .tabs-nav {
+                overflow-x: auto;
+            }
+            
+            .trends-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="header" id="header">
+    <div class="container">
+        <div class="nav">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CrimeSpotter UK</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/" class="nav-link">Map</a>
+                <a href="/cities" class="nav-link">Browse by City</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/contact" class="nav-link">Contact</a> <!-- ADD THIS LINE -->
+            </nav>
+            <div class="header-actions">
+                <button class="btn-secondary" id="share-btn">
+                    <i class="fas fa-share-alt"></i>
+                    Share
+                </button>
+            </div>
+            <div class="mobile-menu-btn" id="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <!-- City Header -->
+    <section class="city-header-section">
+        <div class="city-header-content">
+            <div class="breadcrumb">
+                <a href="/">Crime Map</a> / <a href="/cities">Browse by City</a> / London
+            </div>
+            <h1 class="city-title">London Crime Statistics</h1>
+            <p class="city-subtitle">Greater London - Real-time data from UK Police API</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="city-container">
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="showTab('crime-map')">Crime Map</button>
+            <button class="tab-btn" onclick="showTab('trends')">Trends</button>
+            <button class="tab-btn" onclick="showTab('analytics')">Analytics</button>
+        </div>
+
+        <!-- Crime Map Tab -->
+        <div id="crime-map" class="tab-content active">
+            <div id="city-crime-map" class="city-crime-map"></div>
+            <div class="dynamic-content">
+                <h3>About London Crime Map</h3>
+                <p>This interactive map displays crime data for London from the UK Police API. Click on markers to see crime details. Use the controls to filter by crime type and date.</p>
+            </div>
+        </div>
+
+        <!-- Trends Tab -->
+        <div id="trends" class="tab-content">
+            <div class="trends-grid" id="trends-grid">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading crime data...</p>
+                </div>
+            </div>
+            
+            <table class="crime-table" id="crime-breakdown" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Crime Type</th>
+                        <th>Count</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody id="crime-breakdown-body">
+                </tbody>
+            </table>
+
+            <div class="dynamic-content" id="trends-narrative" style="display: none;">
+                <h3>London Crime Trends</h3>
+                <div id="narrative-content"></div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="chart-container">
+                <h3 class="chart-title">Crime by Category</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title">Top Crime Locations</h3>
+                <canvas id="locationChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. All rights reserved. | 
+                   <a href="/privacy" style="color: #94a3b8;">Privacy Policy</a> | 
+                   <a href="/terms" style="color: #94a3b8;">Terms of Service</a> |
+                   <a href="/contact" style="color: #94a3b8;">Contact</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    
+    <script>
+        // City coordinates
+        const LONDON_COORDS = { lat: 51.5074, lng: -0.1278 };
+        let crimeData = [];
+        let map = null;
+        let markers = null;
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+            loadCrimeData();
+        });
+        
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to button
+            event.target.classList.add('active');
+            
+            // Initialize analytics charts if analytics tab is selected
+            if (tabName === 'analytics' && crimeData.length > 0) {
+                setTimeout(() => createAnalyticsCharts(), 100);
+            }
+        }
+        
+        // Initialize map
+        function initializeMap() {
+            map = L.map('city-crime-map').setView([LONDON_COORDS.lat, LONDON_COORDS.lng], 11);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18
+            }).addTo(map);
+            
+            markers = L.markerClusterGroup();
+            map.addLayer(markers);
+        }
+        
+        // Load crime data from API
+        async function loadCrimeData() {
+            try {
+                // Call your backend API which calls UK Police API
+                const response = await fetch(`/api/crimes?lat=${LONDON_COORDS.lat}&lng=${LONDON_COORDS.lng}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    crimeData = data.crimes;
+                    displayCrimeData(data);
+                    addCrimesToMap(data.crimes);
+                } else {
+                    console.error('Failed to load crime data');
+                }
+            } catch (error) {
+                console.error('Error loading crime data:', error);
+            }
+        }
+        
+        // Display crime data in trends
+        function displayCrimeData(data) {
+            const trendsGrid = document.getElementById('trends-grid');
+            const crimeBreakdown = document.getElementById('crime-breakdown');
+            const trendsNarrative = document.getElementById('trends-narrative');
+            
+            // Create trend cards
+            trendsGrid.innerHTML = `
+                <div class="trend-card">
+                    <div class="trend-title">Total Crimes</div>
+                    <div class="trend-value">${data.count.toLocaleString()}</div>
+                    <div class="trend-subtitle">${data.date}</div>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-title">Crime Categories</div>
+                    <div class="trend-value">${Object.keys(data.categories).length}</div>
+                    <div class="trend-subtitle">Different types</div>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-title">Most Common</div>
+                    <div class="trend-value" style="font-size: 1.2rem;">${getMostCommonCrime(data.categories)}</div>
+                    <div class="trend-subtitle">${getHighestCount(data.categories)} incidents</div>
+                </div>
+            `;
+            
+            // Show crime breakdown table
+            crimeBreakdown.style.display = 'table';
+            const tbody = document.getElementById('crime-breakdown-body');
+            tbody.innerHTML = '';
+            
+            const sortedCategories = Object.entries(data.categories).sort((a, b) => b[1] - a[1]);
+            sortedCategories.forEach(([category, count]) => {
+                const percentage = ((count / data.count) * 100).toFixed(1);
+                const row = `
+                    <tr>
+                        <td><strong>${formatCategoryName(category)}</strong></td>
+                        <td>${count}</td>
+                        <td>${percentage}%</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+            
+            // Generate narrative
+            trendsNarrative.style.display = 'block';
+            const narrativeContent = document.getElementById('narrative-content');
+            narrativeContent.innerHTML = `
+                <p>
+                    CrimeSpotter's London crime map shows <span class="highlight">${data.count.toLocaleString()} total crimes</span> 
+                    reported in ${data.date}. The crime data is sourced directly from the UK Police API.
+                </p>
+                <p>
+                    The most common crime type in London is <span class="highlight">${formatCategoryName(getMostCommonCrime(data.categories))}</span>, 
+                    accounting for <span class="highlight">${getHighestCount(data.categories)}</span> incidents 
+                    (${((getHighestCount(data.categories) / data.count) * 100).toFixed(1)}% of all crimes).
+                </p>
+                <p>
+                    This data represents crimes within approximately 1 mile of central London. The actual coverage area may vary 
+                    based on police force boundaries and reporting practices.
+                </p>
+            `;
+        }
+        
+        // Add crimes to map
+        function addCrimesToMap(crimes) {
+            markers.clearLayers();
+            
+            crimes.forEach(crime => {
+                if (crime.location && crime.location.latitude && crime.location.longitude) {
+                    const lat = parseFloat(crime.location.latitude);
+                    const lng = parseFloat(crime.location.longitude);
+                    
+                    const marker = L.marker([lat, lng]);
+                    marker.bindPopup(`
+                        <strong>${formatCategoryName(crime.category)}</strong><br>
+                        ${crime.location.street?.name || 'Unknown location'}<br>
+                        ${crime.month}
+                    `);
+                    
+                    markers.addLayer(marker);
+                }
+            });
+        }
+        
+        // Create analytics charts
+        function createAnalyticsCharts() {
+            if (!crimeData || crimeData.length === 0) return;
+            
+            // Category chart
+            const categories = {};
+            crimeData.forEach(crime => {
+                const cat = crime.category || 'unknown';
+                categories[cat] = (categories[cat] || 0) + 1;
+            });
+            
+            const sortedCategories = Object.entries(categories)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            const ctx1 = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: sortedCategories.map(([cat]) => formatCategoryName(cat)),
+                    datasets: [{
+                        label: 'Number of Crimes',
+                        data: sortedCategories.map(([, count]) => count),
+                        backgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+            
+            // Location chart (by street)
+            const streets = {};
+            crimeData.forEach(crime => {
+                if (crime.location && crime.location.street) {
+                    const street = crime.location.street.name || 'Unknown';
+                    streets[street] = (streets[street] || 0) + 1;
+                }
+            });
+            
+            const topStreets = Object.entries(streets)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            const ctx2 = document.getElementById('locationChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'horizontalBar',
+                data: {
+                    labels: topStreets.map(([street]) => street.substring(0, 30)),
+                    datasets: [{
+                        label: 'Crimes',
+                        data: topStreets.map(([, count]) => count),
+                        backgroundColor: '#10b981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+        
+        // Helper functions
+        function getMostCommonCrime(categories) {
+            const sorted = Object.entries(categories).sort((a, b) => b[1] - a[1]);
+            return sorted[0] ? sorted[0][0] : 'Unknown';
+        }
+        
+        function getHighestCount(categories) {
+            const sorted = Object.entries(categories).sort((a, b) => b[1] - a[1]);
+            return sorted[0] ? sorted[0][1] : 0;
+        }
+        
+        function formatCategoryName(category) {
+            return category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+    </script>
+</body>
+</html>
