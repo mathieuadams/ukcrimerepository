@@ -1,0 +1,28 @@
+<header class="header" id="header">
+  <div class="container">
+    <div class="nav">
+      <div class="logo">
+        <i class="fas fa-shield-alt"></i>
+        <a href="/" class="logo-text">CrimeSpotter UK</a>
+      </div>
+
+      <nav class="nav-links">
+        <a href="/"        class="nav-link <%= page === 'index' ? 'active' : '' %>">Map</a>
+        <a href="/cities"  class="nav-link <%= (page === 'cities' || page === 'city') ? 'active' : '' %>">Browse by City</a>
+        <a href="/about"   class="nav-link <%= page === 'about' ? 'active' : '' %>">About</a>
+        <a href="/contact" class="nav-link <%= page === 'contact' ? 'active' : '' %>">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn-secondary" id="share-btn">
+          <i class="fas fa-share-alt"></i> Share
+        </button>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+

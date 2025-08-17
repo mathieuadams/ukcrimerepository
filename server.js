@@ -29,6 +29,22 @@ let datesCache = {
     ttl: 60 * 60 * 1000 // 1 hour TTL
 };
 
+app.use((req, res, next) => {
+  const p = req.path.toLowerCase();
+  let page = 'other';
+  if (p === '/') page = 'index';
+  else if (p.startsWith('/cities')) page = 'cities';
+  else if (p.startsWith('/city')) page = 'city';
+  else if (p.startsWith('/about')) page = 'about';
+  else if (p.startsWith('/privacy')) page = 'privacy';
+  else if (p.startsWith('/terms')) page = 'terms';
+  else if (p.startsWith('/contact')) page = 'contact';
+
+  res.locals.page = page;
+  res.locals.year = new Date().getFullYear();
+  next();
+});
+
 /**
  * Get available dates from UK Police API with caching
  */
@@ -157,6 +173,7 @@ app.get('/cities', (req, res) => {
     try {
         res.render('cities', { 
             title: 'Browse by City - CrimeSpotter UK'
+
         });
     } catch (error) {
         console.error('Error rendering cities page:', error);
@@ -223,6 +240,7 @@ app.get('/city/:cityname', async (req, res) => {
             cityLat: city.lat,
             cityLng: city.lng,
             cityRegion: city.region
+
         });
         
     } catch (error) {

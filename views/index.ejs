@@ -36,34 +36,7 @@
         </div>
     </div>
 
-<!-- Header -->
-<header class="header" id="header">
-    <div class="container">
-        <div class="nav">
-            <div class="logo">
-                <i class="fas fa-shield-alt"></i>
-                <span>CrimeSpotter UK</span>
-            </div>
-            <nav class="nav-links">
-                <a href="/" class="nav-link">Map</a>
-                <a href="/cities" class="nav-link">Browse by City</a>
-                <a href="/about" class="nav-link">About</a>
-                <a href="/contact" class="nav-link">Contact</a> <!-- ADD THIS LINE -->
-            </nav>
-            <div class="header-actions">
-                <button class="btn-secondary" id="share-btn">
-                    <i class="fas fa-share-alt"></i>
-                    Share
-                </button>
-            </div>
-            <div class="mobile-menu-btn" id="mobile-menu-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </div>
-</header>
+<%- include('partials/header') %>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -303,49 +276,7 @@
 </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>CrimeSpotter UK</span>
-                    </div>
-                    <p>Providing transparent access to UK crime data for safer communities.</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="/">Map</a></li>
-                        <li><a href="/statistics">Statistics</a></li>
-                        <li><a href="/about">About</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Data Sources</h4>
-                    <ul>
-                        <li><a href="https://data.police.uk" target="_blank">UK Police Data</a></li>
-                        <li><a href="/about">About Our Data</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="/privacy">Privacy Policy</a></li>
-                        <li><a href="/terms">Terms of Service</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 CrimeSpotter UK. Data provided under Open Government Licence.</p>
-            </div>
-        </div>
-    </footer>
+<%- include('partials/footer') %>
 
 <!-- Replace the script section at the bottom of index.ejs with this improved version -->
 
