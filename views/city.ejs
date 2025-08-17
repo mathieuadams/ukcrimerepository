@@ -133,14 +133,13 @@
 
     <!-- Trends Tab (9-month charts) -->
     <div id="trends" class="tab-content">
-      <div id="trend-charts">
         <div class="chart-container">
-          <h3 class="chart-title">All Crimes — Last 9 Months</h3>
-          <canvas id="trend-total"></canvas>
+            <h3 class="chart-title">All Crimes — Last 9 Months</h3>
+            <canvas id="trend-total" class="chart-canvas"></canvas>
         </div>
         <div class="chart-container">
-          <h3 class="chart-title">By Category — Last 9 Months</h3>
-          <canvas id="trend-bycat"></canvas>
+            <h3 class="chart-title">By Category — Last 9 Months</h3>
+            <canvas id="trend-bycat" class="chart-canvas"></canvas>
         </div>
       </div>
     </div>
@@ -166,15 +165,16 @@
         <tbody id="analytics-breakdown-body"></tbody>
       </table>
 
-      <div class="chart-container">
-        <h3 class="chart-title">Crime by Category</h3>
-        <canvas id="categoryChart"></canvas>
-      </div>
+        <div class="chart-container fixed-320">
+            <h3 class="chart-title">Crime by Category</h3>
+            <canvas id="categoryChart" class="chart-canvas"></canvas>
+        </div>
 
-      <div class="chart-container">
-        <h3 class="chart-title">Top Streets (Incidents)</h3>
-        <canvas id="locationChart"></canvas>
-      </div>
+        <div class="chart-container fixed-320">
+            <h3 class="chart-title">Top Streets (Incidents)</h3>
+            <canvas id="locationChart" class="chart-canvas"></canvas>
+        </div>
+
     </div>
   </div>
 
