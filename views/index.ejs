@@ -129,22 +129,37 @@
         </div>
     </section>
 
-    <!-- AdSense Banner -->
-    <section class="ad-section">
-        <div class="container">
-            <div class="ad-container ad-banner">
-                <div class="ad-placeholder">
-                    <div class="ad-label">Advertisement</div>
-                    <div class="ad-content">
-                        <!-- AdSense Responsive Banner -->
-                        <div style="width: 728px; height: 90px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; border-radius: 8px;">
-                            728 x 90 Banner Ad Space
-                        </div>
+<!-- Replace the AdSense Banner section in your index.ejs with this responsive version -->
+
+<!-- AdSense Banner -->
+<section class="ad-section">
+    <div class="container">
+        <div class="ad-container">
+            <div class="ad-placeholder">
+                <div class="ad-label">Advertisement</div>
+                <div class="ad-content">
+                    <!-- Responsive Ad Container -->
+                    <div class="ad-banner-responsive">
+                        <span class="ad-text">Ad Space</span>
                     </div>
+                    
+                    <!-- If you're using Google AdSense, replace the above with: -->
+                    <!-- 
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-XXXXXXXXXX"
+                         data-ad-slot="XXXXXXXXXX"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                    -->
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Main Map Section -->
     <main class="main-content">
