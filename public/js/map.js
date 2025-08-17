@@ -908,7 +908,36 @@ class CrimeMap {
         `;
     }
 
+    /**
+     * Update statistics panel
+     */
+    updateStatistics(data) {
+        // Update area statistics
+        const areaTotal = document.getElementById('area-total');
+        const areaCommon = document.getElementById('area-common');
+        const areaSafety = document.getElementById('area-safety');
 
+        if (areaTotal) {
+            areaTotal.textContent = data.count || 0;
+        }
+
+        if (areaCommon && data.categories) {
+            const mostCommon = Object.entries(data.categories)
+                .sort(([,a], [,b]) => b - a)[0];
+            
+            if (mostCommon) {
+                const displayName = mostCommon[0].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                areaCommon.textContent = displayName;
+            }
+        }
+
+        if (areaSafety) {
+            // Simple safety score calculation (inverse of crime density)
+            const safetyScore = Math.max(1, Math.min(10, 10 - Math.floor(data.count / 10)));
+            areaSafety.textContent = `${safetyScore}/10`;
+            areaSafety.className = `safety-score ${safetyScore >= 7 ? 'good' : safetyScore >= 4 ? 'medium' : 'poor'}`;
+        }
+    }
 
     /**
      * Update filtered crime count display
