@@ -1142,3 +1142,118 @@ a:hover {
         height: 90vh;
     }
 }
+
+/* ============================================
+   PRIVACY PAGE NAVIGATION FIX
+   Add this to your existing CSS or as a separate fix
+   ============================================ */
+
+/* Fix for Privacy Page Navigation Overlap */
+.privacy-nav {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+    /* Remove sticky positioning on privacy page */
+    position: relative !important;
+    top: auto !important;
+    z-index: 1;
+}
+
+/* Alternative: If you want to keep it sticky but fix the overlap */
+.privacy-nav.sticky-nav {
+    position: sticky !important;
+    top: auto !important; /* Increase top spacing to avoid header overlap */
+    z-index: 10;
+}
+
+/* Ensure content sections have proper spacing */
+.privacy-section {
+    margin-bottom: 3rem;
+    padding-top: 2rem; /* Add padding to prevent content hiding */
+    scroll-margin-top: 120px; /* Increase scroll margin */
+}
+
+/* Fix the first section after navigation */
+.privacy-container > .privacy-section:first-of-type {
+    margin-top: 2rem;
+}
+
+/* For Terms page - same fix */
+.terms-nav {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+    position: relative !important;
+    top: auto !important;
+    z-index: 1;
+}
+
+.terms-section {
+    margin-bottom: 3rem;
+    padding-top: 2rem;
+    scroll-margin-top: 120px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .privacy-nav,
+    .terms-nav {
+        position: relative !important;
+        top: auto !important;
+        margin-bottom: 2rem;
+    }
+    
+    .privacy-section,
+    .terms-section {
+        padding-top: 1rem;
+        scroll-margin-top: 20px;
+    }
+}
+
+/* If the header is causing issues, add this */
+.header {
+    z-index: 1000 !important; /* Ensure header stays on top */
+}
+
+/* Quick Navigation specific styles */
+.privacy-nav h3,
+.terms-nav h3 {
+    font-size: 1rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.privacy-nav ul,
+.terms-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.privacy-nav li,
+.terms-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.privacy-nav a,
+.terms-nav a {
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+    display: block;
+    padding: 0.25rem 0;
+}
+
+.privacy-nav a:hover,
+.terms-nav a:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    padding-left: 0.5rem;
+    border-radius: 4px;
+}
