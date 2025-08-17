@@ -1346,3 +1346,81 @@ body {
         transform: translateX(-50%) translateY(0);
     }
 }
+
+/* Add these styles to your styles.css file */
+
+/* View Mode Control Styles */
+.view-mode-control {
+    background: white !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    display: flex !important;
+    gap: 4px !important;
+    margin: 10px !important;
+}
+
+.view-btn {
+    padding: 6px 10px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    transition: all 0.3s ease !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 500 !important;
+}
+
+.view-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.view-btn.active {
+    background: #3b82f6 !important;
+    color: white !important;
+    border-color: #3b82f6 !important;
+}
+
+/* Layer Control for Heatmap */
+.layer-control {
+    background: white !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    min-width: 150px !important;
+    margin: 10px !important;
+}
+
+/* Heatmap intensity slider */
+#heat-intensity {
+    width: 100% !important;
+    cursor: pointer !important;
+}
+
+#heatmap-controls {
+    transition: all 0.3s ease !important;
+}
+
+/* Ensure controls are visible */
+.leaflet-top.leaflet-right {
+    z-index: 1000 !important;
+}
+
+/* Crime marker styles for better visibility */
+.crime-marker-inner {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+.crime-icon {
+    font-size: 12px !important;
+}

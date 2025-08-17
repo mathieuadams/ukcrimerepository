@@ -132,6 +132,11 @@ class CrimeMap {
     /**
      * Load Leaflet.heat plugin
      */
+// Replace the loadHeatmapPlugin method in your map.js file with this fixed version:
+
+/**
+ * Load Leaflet.heat plugin and add controls when ready
+ */
     loadHeatmapPlugin() {
         // Check if already loaded
         if (typeof L.heatLayer !== 'undefined') {
@@ -140,16 +145,49 @@ class CrimeMap {
             return;
         }
         
-        // Wait a moment for the script from HTML to load
-        setTimeout(() => {
+        // Try multiple times with increasing delays
+        let attempts = 0;
+        const maxAttempts = 10;
+        
+        const checkHeatmap = () => {
+            attempts++;
+            
             if (typeof L.heatLayer !== 'undefined') {
                 console.log('✅ Heatmap plugin loaded from HTML');
                 this.addViewModeControls();
+            } else if (attempts < maxAttempts) {
+                console.log(`⏳ Waiting for heatmap plugin... (attempt ${attempts}/${maxAttempts})`);
+                setTimeout(checkHeatmap, 500); // Check every 500ms
             } else {
-                console.log('⚠️ Heatmap plugin not available, view mode controls disabled');
+                console.error('⚠️ Heatmap plugin not available after 5 seconds');
+                // Try to load it dynamically as a fallback
+                this.loadHeatmapScriptDynamically();
             }
-        }, 1000);
+        };
+        
+        // Start checking after a short delay to ensure DOM is ready
+        setTimeout(checkHeatmap, 100);
     }
+
+    /**
+     * Dynamically load heatmap script as fallback
+     */
+    loadHeatmapScriptDynamically() {
+        console.log('📥 Attempting to load heatmap plugin dynamically...');
+        
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js';
+        script.onload = () => {
+            console.log('✅ Heatmap plugin loaded dynamically');
+            setTimeout(() => {
+                this.addViewModeControls();
+            }, 100);
+        };
+        script.onerror = () => {
+            console.error('❌ Failed to load heatmap plugin');
+        };
+        document.head.appendChild(script);
+}
 
     /**
      * Add view mode controls to the map
