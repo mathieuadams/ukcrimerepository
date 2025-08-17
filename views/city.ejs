@@ -146,36 +146,39 @@
 
     <!-- Analytics Tab (cards + table + narrative + bars) -->
     <div id="analytics" class="tab-content">
-      <div class="trends-grid" id="analytics-grid">
-        <div class="loading">
-          <div class="loading-spinner"></div>
-          <p>Loading crime data...</p>
-        </div>
-      </div>
+        <div class="trends-grid" id="analytics-grid">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                    <p>Loading crime data...</p>
+            </div>
+    </div>
 
-      <div class="dynamic-content" id="analytics-narrative" style="display:none;">
+    <div class="dynamic-content" id="analytics-narrative" style="display:none;">
         <h3><%= cityName %> Crime Trends</h3>
-        <div id="analytics-narrative-content"></div>
-      </div>
+            <div id="analytics-narrative-content"></div>
+    </div>
 
-      <table class="crime-table" id="analytics-breakdown" style="display:none;">
+    <table class="crime-table" id="analytics-breakdown" style="display:none;">
         <thead>
-          <tr><th>Crime Type</th><th>Count</th><th>Percentage</th></tr>
+            <tr><th>Crime Type</th><th>Count</th><th>Percentage</th></tr>
         </thead>
-        <tbody id="analytics-breakdown-body"></tbody>
-      </table>
+        <tbody id="analytics-breakdown-body"></tbody>   <!-- <-- removed chart-canvas -->
+    </table>
 
+    <!-- NEW: grid wrapper for charts -->
+    <div class="charts-grid">
         <div class="chart-container">
             <h3 class="chart-title">Crime by Category</h3>
-            <canvas id="categoryChart" ></canvas>
+                <canvas id="categoryChart" class="chart-canvas"></canvas>
         </div>
 
         <div class="chart-container">
             <h3 class="chart-title">Top Streets (Incidents)</h3>
-            <canvas id="locationChart" ></canvas>
+                <canvas id="locationChart" class="chart-canvas"></canvas>
         </div>
-
+        </div>
     </div>
+
   </div>
 
   <%- include('partials/footer') %>
