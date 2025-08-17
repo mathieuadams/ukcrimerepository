@@ -220,9 +220,88 @@ app.get('/terms', (req, res) => {
     }
 });
 
-// Contact page (optional)
+// Add these routes to your server.js file
+// Place them after the existing /terms route (around line 135)
+
+/**
+ * Contact page
+ */
 app.get('/contact', (req, res) => {
-    res.redirect('/about#contact');
+    try {
+        res.render('contact', { 
+            title: 'Contact Us - CrimeSpotter UK'
+        });
+    } catch (error) {
+        console.error('Error rendering contact page:', error);
+        res.status(500).render('error', { 
+            error: 'Unable to load contact page',
+            title: 'Error - CrimeSpotter UK'
+        });
+    }
+});
+
+// Also update the existing Contact page redirect (line 138-140) from:
+// app.get('/contact', (req, res) => {
+//     res.redirect('/about#contact');
+// });
+// TO the route above
+
+// Then add this API route after your other API routes (around line 400, after /api/search)
+
+/**
+ * API: Handle contact form submissions
+ */
+app.post('/api/contact', async (req, res) => {
+    try {
+        const { name, email, subject, message } = req.body;
+        
+        // Basic validation
+        if (!name || !email || !subject || !message) {
+            return res.status(400).json({
+                success: false,
+                error: 'All fields are required'
+            });
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid email address'
+            });
+        }
+        
+        // Sanitize input
+        const sanitizedData = {
+            name: name.substring(0, 100).replace(/[<>]/g, ''),
+            email: email.substring(0, 100),
+            subject: subject.substring(0, 200).replace(/[<>]/g, ''),
+            message: message.substring(0, 5000).replace(/[<>]/g, '')
+        };
+        
+        // Log the submission
+        console.log('📧 Contact Form Submission:', {
+            timestamp: new Date().toISOString(),
+            name: sanitizedData.name,
+            email: sanitizedData.email,
+            subject: sanitizedData.subject
+        });
+        
+        // TODO: In production, send email using nodemailer or similar service
+        
+        res.json({
+            success: true,
+            message: 'Thank you for your message. We will respond within 24-48 hours.'
+        });
+        
+    } catch (error) {
+        console.error('❌ Contact form error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to send message. Please try again later.'
+        });
+    }
 });
 
 /**

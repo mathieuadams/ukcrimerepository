@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .contact-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0 3rem;
+            text-align: center;
+        }
+        
+        .contact-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        
+        .contact-form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        }
+        
+        .contact-form-section h2 {
+            color: #1e293b;
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .contact-form-section p {
+            color: #64748b;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: #334155;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .form-label .required {
+            color: #dc2626;
+            margin-left: 2px;
+        }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .form-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .form-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .form-note {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #64748b;
+            text-align: center;
+        }
+        
+        .form-note a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .form-note a:hover {
+            text-decoration: underline;
+        }
+        
+        .contact-info-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 2.5rem;
+        }
+        
+        .contact-info-section h2 {
+            color: #1e293b;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-methods {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .contact-method {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .contact-details h3 {
+            color: #334155;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .contact-details p {
+            color: #64748b;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        .contact-details a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .contact-details a:hover {
+            text-decoration: underline;
+        }
+        
+        .response-time {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        
+        .response-time h3 {
+            color: #92400e;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .response-time p {
+            color: #78350f;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        .success-message,
+        .error-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        .success-message.show,
+        .error-message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .contact-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .contact-container {
+                padding: 2rem 1rem;
+            }
+            
+            .contact-form-section,
+            .contact-info-section {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link">Map</a></li>
+                    <li><a href="/statistics" class="nav-link">Statistics</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                    <li><a href="/contact" class="nav-link active">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="contact-hero">
+        <h1>Contact Us</h1>
+        <p>We're here to help and answer any questions you might have</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="contact-container">
+        <div class="contact-content">
+            <!-- Contact Form -->
+            <div class="contact-form-section">
+                <h2>Send Us a Message</h2>
+                <p>Please fill out the form below and we'll get back to you as soon as possible.</p>
+                
+                <!-- Success/Error Messages -->
+                <div id="success-message" class="success-message">
+                    <strong>Success!</strong> Your message has been sent. We'll get back to you soon.
+                </div>
+                <div id="error-message" class="error-message">
+                    <strong>Error!</strong> There was a problem sending your message. Please try again.
+                </div>
+                
+                <form id="contact-form" action="/api/contact" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="name">
+                                Name <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                class="form-input" 
+                                required
+                                placeholder="John Smith"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="email">
+                                Email <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input" 
+                                required
+                                placeholder="john@example.com"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="subject">
+                            Subject <span class="required">*</span>
+                        </label>
+                        <select id="subject" name="subject" class="form-select" required>
+                            <option value="">Select a topic...</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="bug">Report a Bug</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="data">Data Question</option>
+                            <option value="privacy">Privacy Concern</option>
+                            <option value="advertising">Advertising</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="message">
+                            Message <span class="required">*</span>
+                        </label>
+                        <textarea 
+                            id="message" 
+                            name="message" 
+                            class="form-textarea" 
+                            required
+                            placeholder="Please describe your inquiry in detail..."
+                        ></textarea>
+                    </div>
+                    
+                    <!-- Optional: Add reCAPTCHA here -->
+                    <div class="form-group">
+                        <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+                    </div>
+                    
+                    <button type="submit" class="form-submit" id="submit-btn">
+                        Send Message
+                    </button>
+                </form>
+                
+                <div class="form-note">
+                    This form is protected by reCAPTCHA and the Google 
+                    <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and 
+                    <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+                    View our <a href="/privacy">Privacy Policy</a>.
+                </div>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="contact-info-section">
+                <h2>Other Ways to Reach Us</h2>
+                
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p>
+                                General: <a href="mailto:contact@crimespotter-uk.com">contact@crimespotter-uk.com</a><br>
+                                Support: <a href="mailto:support@crimespotter-uk.com">support@crimespotter-uk.com</a><br>
+                                Privacy: <a href="mailto:privacy@crimespotter-uk.com">privacy@crimespotter-uk.com</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Response Time</h3>
+                            <p>
+                                We typically respond within 24-48 hours during business days.<br>
+                                For urgent matters, please indicate in your subject line.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Location</h3>
+                            <p>
+                                Based in the United States<br>
+                                Serving UK crime data globally
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="response-time">
+                    <h3>📌 Before You Contact Us</h3>
+                    <p>
+                        You might find quick answers in our <a href="/about">About</a> page or 
+                        <a href="/privacy">Privacy Policy</a>. For data-related questions, note that 
+                        all crime data comes from the official UK Police API.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. All rights reserved. | 
+                   <a href="/privacy" style="color: #94a3b8;">Privacy Policy</a> | 
+                   <a href="/terms" style="color: #94a3b8;">Terms of Service</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Contact Form JavaScript -->
+    <script>
+    document.getElementById('contact-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submit-btn');
+        const successMsg = document.getElementById('success-message');
+        const errorMsg = document.getElementById('error-message');
+        
+        // Hide any existing messages
+        successMsg.classList.remove('show');
+        errorMsg.classList.remove('show');
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending... <span class="loading-spinner"></span>';
+        
+        // Get form data
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+        
+        try {
+            // Send to your backend
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                // Show success message
+                successMsg.classList.add('show');
+                // Reset form
+                this.reset();
+                // Scroll to top of form
+                this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                throw new Error('Failed to send message');
+            }
+        } catch (error) {
+            // Show error message
+            errorMsg.classList.add('show');
+            console.error('Contact form error:', error);
+        } finally {
+            // Reset button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Send Message';
+        }
+    });
+    </script>
+    
+    <!-- Optional: Add reCAPTCHA script -->
+    <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
+</body>
+</html>

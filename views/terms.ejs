@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .terms-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0 3rem;
+            text-align: center;
+        }
+        
+        .terms-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .terms-hero .last-updated {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .terms-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+        }
+        
+        .terms-nav {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+            position: sticky;
+            top: 80px;
+            z-index: 100;
+        }
+        
+        .terms-nav h3 {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .terms-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .terms-nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .terms-nav a {
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 0.25rem 0;
+        }
+        
+        .terms-nav a:hover {
+            color: #667eea;
+        }
+        
+        .terms-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 100px;
+        }
+        
+        .terms-section h2 {
+            color: #1e293b;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .terms-section h3 {
+            color: #334155;
+            font-size: 1.3rem;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        .terms-section h4 {
+            color: #475569;
+            font-size: 1.1rem;
+            margin: 1rem 0 0.5rem;
+            font-weight: 600;
+        }
+        
+        .terms-section p {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .terms-section ul, .terms-section ol {
+            color: #64748b;
+            line-height: 1.8;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .terms-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .terms-section strong {
+            color: #475569;
+            font-weight: 600;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .important-box {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .disclaimer-box {
+            background: #1e293b;
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .disclaimer-box h3 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .disclaimer-box p {
+            color: #cbd5e1;
+            margin: 0;
+            line-height: 1.8;
+        }
+        
+        .legal-text {
+            font-family: 'Courier New', monospace;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #334155;
+            margin: 1rem 0;
+        }
+        
+        .contact-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .contact-card h3 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-card p {
+            margin: 0.5rem 0;
+        }
+        
+        .contact-card a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        
+        .contact-card a:hover {
+            text-decoration: underline;
+        }
+        
+        .definition-list {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .definition-list dt {
+            color: #334155;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        
+        .definition-list dd {
+            color: #64748b;
+            margin-left: 0;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .terms-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .terms-container {
+                padding: 2rem 1rem;
+            }
+            
+            .terms-nav {
+                position: static;
+                margin-bottom: 2rem;
+            }
+            
+            .terms-section h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link">Map</a></li>
+                    <li><a href="/statistics" class="nav-link">Statistics</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                    <li><a href="/contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="terms-hero">
+        <h1>Terms of Service</h1>
+        <p class="last-updated">Effective Date: January 1, 2025 | Last Updated: January 1, 2025</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="terms-container">
+        <!-- Quick Navigation -->
+        <nav class="terms-nav">
+            <h3>Quick Navigation</h3>
+            <ul>
+                <li><a href="#acceptance">1. Acceptance of Terms</a></li>
+                <li><a href="#description">2. Service Description</a></li>
+                <li><a href="#use-license">3. Use License</a></li>
+                <li><a href="#user-conduct">4. User Conduct</a></li>
+                <li><a href="#data-accuracy">5. Data Accuracy</a></li>
+                <li><a href="#intellectual-property">6. Intellectual Property</a></li>
+                <li><a href="#privacy">7. Privacy</a></li>
+                <li><a href="#disclaimers">8. Disclaimers</a></li>
+                <li><a href="#limitation">9. Limitation of Liability</a></li>
+                <li><a href="#indemnification">10. Indemnification</a></li>
+                <li><a href="#termination">11. Termination</a></li>
+                <li><a href="#governing-law">12. Governing Law</a></li>
+                <li><a href="#changes">13. Changes to Terms</a></li>
+                <li><a href="#contact">14. Contact Information</a></li>
+            </ul>
+        </nav>
+
+        <!-- Important Disclaimer -->
+        <div class="disclaimer-box">
+            <h3>⚠️ IMPORTANT LEGAL NOTICE</h3>
+            <p>
+                By accessing or using CrimeSpotter UK, you agree to be bound by these Terms of Service and all 
+                applicable laws and regulations. If you do not agree with any of these terms, you are prohibited 
+                from using or accessing this site. Please read these terms carefully before using our Service.
+            </p>
+        </div>
+
+        <!-- 1. Acceptance of Terms -->
+        <section id="acceptance" class="terms-section">
+            <h2>1. Acceptance of Terms</h2>
+            <p>
+                These Terms of Service ("Terms", "Terms of Service") govern your relationship with the 
+                CrimeSpotter UK website (the "Service") operated by CrimeSpotter UK ("us", "we", or "our") 
+                from the United States.
+            </p>
+            <p>
+                Your access to and use of the Service is conditioned on your acceptance of and compliance with 
+                these Terms. These Terms apply to all visitors, users, and others who access or use the Service.
+            </p>
+            <p>
+                By accessing or using the Service you agree to be bound by these Terms. If you disagree with any 
+                part of these terms, then you may not access the Service.
+            </p>
+            
+            <div class="info-box">
+                <strong>Age Requirement:</strong> You must be at least 13 years old (16 in the UK/EU) to use 
+                this Service. By using the Service, you represent that you meet this age requirement.
+            </div>
+        </section>
+
+        <!-- 2. Service Description -->
+        <section id="description" class="terms-section">
+            <h2>2. Description of Service</h2>
+            <p>
+                CrimeSpotter UK provides an online platform for viewing and analyzing crime data from the United 
+                Kingdom. Our Service includes:
+            </p>
+            <ul>
+                <li>Interactive crime data maps</li>
+                <li>Statistical analysis and visualizations</li>
+                <li>Crime data filtering and search capabilities</li>
+                <li>Historical crime data access</li>
+                <li>Area safety information</li>
+            </ul>
+            
+            <h3>2.1 Data Source</h3>
+            <p>
+                All crime data displayed on our Service is obtained from the official UK Police API 
+                (data.police.uk), which provides open data under the Open Government Licence. We do not 
+                create, modify, or verify this data.
+            </p>
+            
+            <h3>2.2 Service Availability</h3>
+            <p>
+                We strive to provide continuous access to our Service, but we do not guarantee uninterrupted 
+                availability. The Service may be temporarily unavailable due to:
+            </p>
+            <ul>
+                <li>Scheduled or emergency maintenance</li>
+                <li>Technical difficulties</li>
+                <li>Updates or improvements</li>
+                <li>External service disruptions</li>
+                <li>Force majeure events</li>
+            </ul>
+        </section>
+
+        <!-- 3. Use License -->
+        <section id="use-license" class="terms-section">
+            <h2>3. Use License and Restrictions</h2>
+            
+            <h3>3.1 License Grant</h3>
+            <p>
+                Subject to your compliance with these Terms, we grant you a limited, non-exclusive, 
+                non-transferable, revocable license to access and use the Service for personal, 
+                non-commercial purposes.
+            </p>
+            
+            <h3>3.2 License Restrictions</h3>
+            <p>You agree NOT to:</p>
+            <ul>
+                <li>Use the Service for any illegal or unauthorized purpose</li>
+                <li>Violate any laws in your jurisdiction</li>
+                <li>Transmit any malicious code, viruses, or destructive software</li>
+                <li>Attempt to gain unauthorized access to our systems or servers</li>
+                <li>Interfere with or disrupt the Service or connected networks</li>
+                <li>Use automated systems or software to extract data ("scraping") without permission</li>
+                <li>Create derivative works based on the Service</li>
+                <li>Reverse engineer or attempt to extract source code</li>
+                <li>Remove or alter any proprietary notices</li>
+                <li>Use the Service to harass, abuse, or harm others</li>
+                <li>Impersonate any person or entity</li>
+                <li>Sell, resell, or commercially exploit the Service</li>
+            </ul>
+            
+            <div class="warning-box">
+                <strong>Warning:</strong> Violation of these restrictions may result in immediate termination 
+                of your access to the Service and may subject you to legal action.
+            </div>
+        </section>
+
+        <!-- 4. User Conduct -->
+        <section id="user-conduct" class="terms-section">
+            <h2>4. User Conduct and Responsibilities</h2>
+            
+            <h3>4.1 Acceptable Use</h3>
+            <p>
+                You agree to use the Service only for lawful purposes and in accordance with these Terms. 
+                You are responsible for:
+            </p>
+            <ul>
+                <li>Ensuring your use complies with all applicable laws and regulations</li>
+                <li>Respecting the rights and dignity of others</li>
+                <li>Using accurate information when contacting us</li>
+                <li>Maintaining the confidentiality of any account credentials</li>
+                <li>Promptly notifying us of any unauthorized use</li>
+            </ul>
+            
+            <h3>4.2 Prohibited Activities</h3>
+            <p>
+                You expressly agree not to engage in any of the following prohibited activities:
+            </p>
+            <ul>
+                <li><strong>Data Misuse:</strong> Using crime data to discriminate, harass, or target individuals or groups</li>
+                <li><strong>Misinformation:</strong> Misrepresenting or manipulating data to spread false information</li>
+                <li><strong>Commercial Exploitation:</strong> Using the Service for unauthorized commercial purposes</li>
+                <li><strong>System Abuse:</strong> Overwhelming our servers with excessive requests</li>
+                <li><strong>Privacy Violations:</strong> Attempting to identify individuals from anonymized data</li>
+                <li><strong>Harmful Content:</strong> Posting or transmitting harmful, offensive, or illegal content</li>
+            </ul>
+        </section>
+
+        <!-- 5. Data Accuracy -->
+        <section id="data-accuracy" class="terms-section">
+            <h2>5. Data Accuracy and Limitations</h2>
+            
+            <div class="important-box">
+                <strong>CRITICAL DISCLAIMER:</strong> The crime data displayed on CrimeSpotter UK is provided 
+                for informational purposes only. We make no warranties or guarantees about the accuracy, 
+                completeness, or timeliness of the data.
+            </div>
+            
+            <h3>5.1 Data Limitations</h3>
+            <p>You understand and acknowledge that:</p>
+            <ul>
+                <li>Crime data is typically delayed by 1-2 months</li>
+                <li>Not all crimes are reported or included in the data</li>
+                <li>Location data is anonymized and approximate</li>
+                <li>Data may contain errors or omissions</li>
+                <li>Crime categorizations may change over time</li>
+                <li>Data quality varies by police force</li>
+            </ul>
+            
+            <h3>5.2 No Reliance</h3>
+            <p>
+                YOU SHOULD NOT RELY SOLELY ON THIS DATA FOR:
+            </p>
+            <ul>
+                <li>Personal safety decisions</li>
+                <li>Property purchase or rental decisions</li>
+                <li>Business location decisions</li>
+                <li>Insurance assessments</li>
+                <li>Legal proceedings</li>
+                <li>Any decision where accuracy is critical</li>
+            </ul>
+            
+            <p>
+                Always consult official sources, local authorities, and qualified professionals for 
+                important decisions.
+            </p>
+        </section>
+
+        <!-- 6. Intellectual Property -->
+        <section id="intellectual-property" class="terms-section">
+            <h2>6. Intellectual Property Rights</h2>
+            
+            <h3>6.1 Our Intellectual Property</h3>
+            <p>
+                The Service and its original content (excluding crime data), features, and functionality are 
+                and will remain the exclusive property of CrimeSpotter UK and its licensors. The Service is 
+                protected by copyright, trademark, and other laws. Our trademarks and trade dress may not be 
+                used without our prior written consent.
+            </p>
+            
+            <h3>6.2 Crime Data License</h3>
+            <p>
+                The crime data displayed on our Service is provided by UK Police forces under the 
+                <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank">
+                Open Government Licence v3.0</a>. You must comply with the terms of this license when using the data.
+            </p>
+            
+            <h3>6.3 User Feedback</h3>
+            <p>
+                Any feedback, suggestions, or ideas you provide about the Service becomes our property. 
+                We may use this feedback without compensation or attribution to you.
+            </p>
+            
+            <h3>6.4 Third-Party Content</h3>
+            <p>
+                Our Service may contain links to third-party websites or services that are not owned or 
+                controlled by CrimeSpotter UK. We assume no responsibility for the content, privacy policies, 
+                or practices of any third-party sites or services.
+            </p>
+        </section>
+
+        <!-- 7. Privacy -->
+        <section id="privacy" class="terms-section">
+            <h2>7. Privacy and Data Protection</h2>
+            <p>
+                Your use of the Service is also governed by our Privacy Policy, which is incorporated into 
+                these Terms by reference. Please review our <a href="/privacy">Privacy Policy</a> to understand 
+                our practices regarding your information.
+            </p>
+            
+            <h3>7.1 Data Collection</h3>
+            <p>By using the Service, you consent to:</p>
+            <ul>
+                <li>The collection and use of information as outlined in our Privacy Policy</li>
+                <li>The use of cookies and similar technologies (with your consent where required)</li>
+                <li>The transfer of data to the United States for processing</li>
+            </ul>
+            
+            <h3>7.2 International Data Transfer</h3>
+            <div class="info-box">
+                <strong>Notice for UK/EU Users:</strong> Your data will be transferred to and processed in the 
+                United States. By using the Service, you consent to this transfer.
+            </div>
+        </section>
+
+        <!-- 8. Disclaimers -->
+        <section id="disclaimers" class="terms-section">
+            <h2>8. Disclaimers and Warranties</h2>
+            
+            <div class="legal-text">
+                THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. CRIMESPOTTER UK AND ITS 
+                AFFILIATES, LICENSORS, AND SUPPLIERS EXPRESSLY DISCLAIM ALL WARRANTIES OF ANY KIND, WHETHER 
+                EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, 
+                FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+            </div>
+            
+            <p>We do not warrant that:</p>
+            <ul>
+                <li>The Service will meet your requirements</li>
+                <li>The Service will be uninterrupted, timely, secure, or error-free</li>
+                <li>The results obtained from the Service will be accurate or reliable</li>
+                <li>Any errors in the Service will be corrected</li>
+            </ul>
+            
+            <p>
+                Some jurisdictions do not allow the exclusion of certain warranties. In such jurisdictions, 
+                the above exclusions may not apply to you to the extent prohibited by law.
+            </p>
+        </section>
+
+        <!-- 9. Limitation of Liability -->
+        <section id="limitation" class="terms-section">
+            <h2>9. Limitation of Liability</h2>
+            
+            <div class="legal-text">
+                TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL CRIMESPOTTER UK, ITS AFFILIATES, 
+                OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, SUPPLIERS, OR LICENSORS BE LIABLE FOR ANY INDIRECT, 
+                INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION, LOSS OF 
+                PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM:
+            </div>
+            
+            <ol>
+                <li>Your use or inability to use the Service</li>
+                <li>Any unauthorized access to or alteration of your transmissions or data</li>
+                <li>Any conduct or content of any third party on the Service</li>
+                <li>Any errors, inaccuracies, or omissions in the crime data</li>
+                <li>Personal injury or property damage resulting from your use of the Service</li>
+                <li>Any interruption or cessation of the Service</li>
+                <li>Any bugs, viruses, or other harmful code transmitted through the Service</li>
+                <li>Any loss or damage incurred as a result of the use of any content posted, emailed, 
+                    transmitted, or otherwise made available through the Service</li>
+            </ol>
+            
+            <p>
+                Our total liability to you for any damages shall not exceed the amount of $100 USD or the 
+                amount you paid to us in the past twelve months, whichever is greater.
+            </p>
+            
+            <div class="warning-box">
+                <strong>Note:</strong> Some jurisdictions do not allow the limitation or exclusion of liability 
+                for incidental or consequential damages, so the above limitations may not apply to you.
+            </div>
+        </section>
+
+        <!-- 10. Indemnification -->
+        <section id="indemnification" class="terms-section">
+            <h2>10. Indemnification</h2>
+            <p>
+                You agree to indemnify, defend, and hold harmless CrimeSpotter UK, its affiliates, officers, 
+                directors, employees, agents, licensors, and suppliers from and against any claims, liabilities, 
+                damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) 
+                arising out of or relating to:
+            </p>
+            <ul>
+                <li>Your violation of these Terms</li>
+                <li>Your violation of any third-party rights</li>
+                <li>Your violation of any applicable laws or regulations</li>
+                <li>Any content or data you provide to the Service</li>
+                <li>Your use or misuse of the Service</li>
+                <li>Any damage caused by your use of the Service</li>
+            </ul>
+            
+            <p>
+                We reserve the right to assume the exclusive defense and control of any matter subject to 
+                indemnification by you, in which case you agree to cooperate with our defense of such claim.
+            </p>
+        </section>
+
+        <!-- 11. Termination -->
+        <section id="termination" class="terms-section">
+            <h2>11. Termination</h2>
+            
+            <h3>11.1 Termination by You</h3>
+            <p>
+                You may stop using the Service at any time. You do not need to inform us when you stop using 
+                the Service.
+            </p>
+            
+            <h3>11.2 Termination by Us</h3>
+            <p>
+                We may terminate or suspend your access to the Service immediately, without prior notice or 
+                liability, for any reason, including but not limited to:
+            </p>
+            <ul>
+                <li>Breach of these Terms</li>
+                <li>Violation of applicable laws</li>
+                <li>Conduct that we believe is harmful to other users or the Service</li>
+                <li>At our sole discretion for any reason</li>
+            </ul>
+            
+            <h3>11.3 Effect of Termination</h3>
+            <p>
+                Upon termination, your right to use the Service will cease immediately. All provisions of these 
+                Terms that by their nature should survive termination shall survive, including ownership 
+                provisions, warranty disclaimers, indemnity, and limitations of liability.
+            </p>
+        </section>
+
+        <!-- 12. Governing Law -->
+        <section id="governing-law" class="terms-section">
+            <h2>12. Governing Law and Jurisdiction</h2>
+            
+            <h3>12.1 Governing Law</h3>
+            <p>
+                These Terms shall be governed and construed in accordance with the laws of the United States 
+                and the State of California, without regard to its conflict of law provisions. Our failure to 
+                enforce any right or provision of these Terms will not be considered a waiver of those rights.
+            </p>
+            
+            <h3>12.2 Jurisdiction</h3>
+            <p>
+                You agree to submit to the personal and exclusive jurisdiction of the courts located in 
+                California, United States, for the resolution of any disputes arising from or relating to 
+                these Terms or the Service.
+            </p>
+            
+            <h3>12.3 Dispute Resolution</h3>
+            <p>
+                Any dispute arising from these Terms or your use of the Service shall first be attempted to 
+                be resolved through good-faith negotiation. If negotiation fails, disputes shall be resolved 
+                through binding arbitration in accordance with the rules of the American Arbitration Association.
+            </p>
+            
+            <div class="info-box">
+                <strong>Class Action Waiver:</strong> You agree to resolve disputes with us on an individual 
+                basis and waive your right to participate in a class action lawsuit or class-wide arbitration.
+            </div>
+        </section>
+
+        <!-- 13. Changes to Terms -->
+        <section id="changes" class="terms-section">
+            <h2>13. Changes to Terms</h2>
+            <p>
+                We reserve the right, at our sole discretion, to modify or replace these Terms at any time. 
+                If a revision is material, we will try to provide at least 30 days notice prior to any new 
+                terms taking effect.
+            </p>
+            
+            <h3>13.1 Notice of Changes</h3>
+            <p>We will notify you of changes by:</p>
+            <ul>
+                <li>Updating the "Last Updated" date at the top of these Terms</li>
+                <li>Posting a notice on our website</li>
+                <li>Sending an email (if we have your email address)</li>
+            </ul>
+            
+            <h3>13.2 Acceptance of Changes</h3>
+            <p>
+                Your continued use of the Service after any changes to these Terms constitutes your acceptance 
+                of the new Terms. If you do not agree to the new terms, you must stop using the Service.
+            </p>
+        </section>
+
+        <!-- 14. Miscellaneous -->
+        <section id="miscellaneous" class="terms-section">
+            <h2>14. Miscellaneous Provisions</h2>
+            
+            <h3>14.1 Entire Agreement</h3>
+            <p>
+                These Terms, together with our Privacy Policy, constitute the entire agreement between you and 
+                CrimeSpotter UK regarding the use of the Service.
+            </p>
+            
+            <h3>14.2 Severability</h3>
+            <p>
+                If any provision of these Terms is held to be invalid or unenforceable, the remaining provisions 
+                will continue in full force and effect.
+            </p>
+            
+            <h3>14.3 Waiver</h3>
+            <p>
+                No waiver of any term of these Terms shall be deemed a further or continuing waiver of such term 
+                or any other term.
+            </p>
+            
+            <h3>14.4 Assignment</h3>
+            <p>
+                You may not assign or transfer these Terms or your rights under them without our prior written 
+                consent. We may assign our rights under these Terms without your consent.
+            </p>
+            
+            <h3>14.5 Force Majeure</h3>
+            <p>
+                We shall not be liable for any failure or delay in performance due to circumstances beyond our 
+                reasonable control, including but not limited to acts of God, natural disasters, war, terrorism, 
+                riots, embargoes, acts of civil or military authorities, fire, floods, accidents, pandemic, 
+                strikes, or shortages of transportation facilities, fuel, energy, labor, or materials.
+            </p>
+        </section>
+
+        <!-- Contact Information -->
+        <section id="contact" class="terms-section">
+            <h2>15. Contact Information</h2>
+            
+            <div class="contact-card">
+                <h3>Questions About These Terms?</h3>
+                <p>
+                    If you have any questions about these Terms of Service, please contact us:
+                </p>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:legal@crimespotter-uk.com">legal@crimespotter-uk.com</a><br>
+                    <strong>Website:</strong> <a href="https://crimespotter-uk.onrender.com">crimespotter-uk.onrender.com</a><br>
+                    <strong>Contact Form:</strong> <a href="/contact">Contact Page</a>
+                </p>
+                <p style="margin-top: 1rem;">
+                    <strong>Mailing Address:</strong><br>
+                    CrimeSpotter UK<br>
+                    [Your Business Name]<br>
+                    [Your Address]<br>
+                    [City, State ZIP]<br>
+                    United States
+                </p>
+            </div>
+            
+            <div class="info-box" style="margin-top: 2rem;">
+                <strong>Legal Notice:</strong> These Terms of Service were last reviewed by our legal team on 
+                January 1, 2025. For the most current version, please visit this page regularly.
+            </div>
+        </section>
+
+        <!-- Definitions -->
+        <section class="terms-section">
+            <h2>Appendix: Definitions</h2>
+            <dl class="definition-list">
+                <dt>Service</dt>
+                <dd>Refers to the CrimeSpotter UK website and all associated features and functionality</dd>
+                
+                <dt>Terms</dt>
+                <dd>Refers to these Terms of Service</dd>
+                
+                <dt>User/You</dt>
+                <dd>Any individual or entity accessing or using the Service</dd>
+                
+                <dt>Crime Data</dt>
+                <dd>Information about reported crimes provided by UK Police forces</dd>
+                
+                <dt>Personal Information</dt>
+                <dd>Any information that can identify an individual</dd>
+                
+                <dt>Content</dt>
+                <dd>Any text, images, data, or other materials on the Service</dd>
+                
+                <dt>Third-Party Services</dt>
+                <dd>External services or websites not operated by us</dd>
+            </dl>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. All rights reserved. | 
+                   <a href="/privacy" style="color: #94a3b8;">Privacy Policy</a> | 
+                   <a href="/terms" style="color: #94a3b8;">Terms of Service</a> |
+                   <a href="/contact" style="color: #94a3b8;">Contact</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

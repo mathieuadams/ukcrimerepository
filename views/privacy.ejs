@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .privacy-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0 3rem;
+            text-align: center;
+        }
+        
+        .privacy-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .privacy-hero .last-updated {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .privacy-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+        }
+        
+        .privacy-nav {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+            position: sticky;
+            top: 80px;
+            z-index: 100;
+        }
+        
+        .privacy-nav h3 {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .privacy-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .privacy-nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .privacy-nav a {
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 0.25rem 0;
+        }
+        
+        .privacy-nav a:hover {
+            color: #667eea;
+        }
+        
+        .privacy-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 100px;
+        }
+        
+        .privacy-section h2 {
+            color: #1e293b;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .privacy-section h3 {
+            color: #334155;
+            font-size: 1.3rem;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        .privacy-section h4 {
+            color: #475569;
+            font-size: 1.1rem;
+            margin: 1rem 0 0.5rem;
+            font-weight: 600;
+        }
+        
+        .privacy-section p {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .privacy-section ul, .privacy-section ol {
+            color: #64748b;
+            line-height: 1.8;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .privacy-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .privacy-section strong {
+            color: #475569;
+            font-weight: 600;
+        }
+        
+        .info-box {
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .info-box.warning {
+            background: #fef3c7;
+            border-left-color: #f59e0b;
+        }
+        
+        .info-box.important {
+            background: #fee2e2;
+            border-left-color: #dc2626;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .data-table th {
+            background: #f8fafc;
+            color: #334155;
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .data-table td {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        
+        .contact-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .contact-card h3 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-card p {
+            margin: 0.5rem 0;
+        }
+        
+        .contact-card a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        
+        .contact-card a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .privacy-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .privacy-container {
+                padding: 2rem 1rem;
+            }
+            
+            .privacy-nav {
+                position: static;
+                margin-bottom: 2rem;
+            }
+            
+            .privacy-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .data-table {
+                font-size: 0.9rem;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>CrimeSpotter UK</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link">Map</a></li>
+                    <li><a href="/statistics" class="nav-link">Statistics</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="privacy-hero">
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">Effective Date: January 1, 2025 | Last Updated: January 1, 2025</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="privacy-container">
+        <!-- Quick Navigation -->
+        <nav class="privacy-nav">
+            <h3>Quick Navigation</h3>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#information-we-collect">Information We Collect</a></li>
+                <li><a href="#how-we-use">How We Use Information</a></li>
+                <li><a href="#information-sharing">Information Sharing</a></li>
+                <li><a href="#cookies">Cookies & Tracking</a></li>
+                <li><a href="#data-security">Data Security</a></li>
+                <li><a href="#your-rights">Your Privacy Rights</a></li>
+                <li><a href="#international">International Users</a></li>
+                <li><a href="#children">Children's Privacy</a></li>
+                <li><a href="#changes">Changes to Policy</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
+
+        <!-- Overview -->
+        <section id="overview" class="privacy-section">
+            <h2>Overview</h2>
+            <p>
+                CrimeSpotter UK ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy 
+                explains how we collect, use, disclose, and safeguard your information when you use our website 
+                located at <strong>crimespotter-uk.onrender.com</strong> (the "Service").
+            </p>
+            <p>
+                We are operated from the United States and provide crime data visualization services for the United Kingdom. 
+                By using our Service, you agree to the collection and use of information in accordance with this Privacy Policy.
+            </p>
+            
+            <div class="info-box">
+                <strong>Key Points:</strong>
+                <ul>
+                    <li>We collect minimal personal information</li>
+                    <li>We do not sell your personal data</li>
+                    <li>We use cookies for functionality and advertising (with consent)</li>
+                    <li>You have rights under GDPR if you're in the UK/EU</li>
+                    <li>We are based in the United States</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Information We Collect -->
+        <section id="information-we-collect" class="privacy-section">
+            <h2>Information We Collect</h2>
+            
+            <h3>Information Automatically Collected</h3>
+            <p>
+                When you access our Service, we automatically collect certain information about your device and usage:
+            </p>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Type of Data</th>
+                        <th>Examples</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Device Information</strong></td>
+                        <td>Browser type, operating system, device type, screen resolution</td>
+                        <td>Optimize website display and compatibility</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Usage Data</strong></td>
+                        <td>Pages visited, time spent, click patterns, search queries</td>
+                        <td>Improve user experience and content</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Network Information</strong></td>
+                        <td>IP address (anonymized), ISP, general location (city/region)</td>
+                        <td>Security, fraud prevention, regional content</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Location Searches</strong></td>
+                        <td>UK postcodes, cities, or coordinates searched</td>
+                        <td>Display relevant crime data</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Information You Provide</h3>
+            <p>
+                We collect information you voluntarily provide when using certain features:
+            </p>
+            <ul>
+                <li><strong>Location Services:</strong> If you use the "My Location" feature, your approximate location 
+                    (processed in your browser, not stored on our servers)</li>
+                <li><strong>Contact Information:</strong> If you contact us via email (email address, name, message content)</li>
+                <li><strong>Feedback:</strong> Any feedback, suggestions, or bug reports you submit</li>
+            </ul>
+
+            <h3>Information We Do NOT Collect</h3>
+            <div class="info-box">
+                <p>We do <strong>NOT</strong> collect or store:</p>
+                <ul>
+                    <li>Names, email addresses, or phone numbers (unless you contact us)</li>
+                    <li>Payment or financial information</li>
+                    <li>Social media profiles</li>
+                    <li>Precise GPS coordinates</li>
+                    <li>Government-issued ID numbers</li>
+                    <li>Health or biometric data</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- How We Use Information -->
+        <section id="how-we-use" class="privacy-section">
+            <h2>How We Use Your Information</h2>
+            
+            <p>We use the collected information for the following purposes:</p>
+            
+            <h3>Service Delivery</h3>
+            <ul>
+                <li>Display crime data for requested UK locations</li>
+                <li>Provide interactive map functionality</li>
+                <li>Generate statistical analyses and visualizations</li>
+                <li>Remember your preferences (with cookies)</li>
+            </ul>
+
+            <h3>Service Improvement</h3>
+            <ul>
+                <li>Analyze usage patterns to improve user interface</li>
+                <li>Identify and fix technical issues</li>
+                <li>Develop new features based on user behavior</li>
+                <li>Optimize website performance and speed</li>
+            </ul>
+
+            <h3>Communication</h3>
+            <ul>
+                <li>Respond to inquiries and support requests</li>
+                <li>Send important service updates (if you've contacted us)</li>
+                <li>Address technical issues you report</li>
+            </ul>
+
+            <h3>Legal and Security</h3>
+            <ul>
+                <li>Comply with legal obligations</li>
+                <li>Detect and prevent fraud or abuse</li>
+                <li>Enforce our Terms of Service</li>
+                <li>Protect the rights and safety of users</li>
+            </ul>
+
+            <h3>Advertising</h3>
+            <ul>
+                <li>Display relevant advertisements (with your consent)</li>
+                <li>Measure ad performance and effectiveness</li>
+                <li>Frequency capping to limit ad repetition</li>
+            </ul>
+        </section>
+
+        <!-- Information Sharing -->
+        <section id="information-sharing" class="privacy-section">
+            <h2>Information Sharing and Disclosure</h2>
+            
+            <p>
+                We do not sell, trade, or rent your personal information. We may share information in these circumstances:
+            </p>
+
+            <h3>Service Providers</h3>
+            <p>We work with trusted third-party services that help us operate our website:</p>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Service Provider</th>
+                        <th>Purpose</th>
+                        <th>Data Shared</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Render.com</strong></td>
+                        <td>Website hosting</td>
+                        <td>IP addresses, usage logs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloudflare</strong></td>
+                        <td>CDN and security</td>
+                        <td>IP addresses, traffic data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Google AdSense</strong></td>
+                        <td>Advertisement delivery</td>
+                        <td>Cookies, device info (with consent)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Google Analytics</strong></td>
+                        <td>Usage analytics</td>
+                        <td>Anonymized usage data (with consent)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Legal Requirements</h3>
+            <p>We may disclose information if required by law or in good faith belief that such action is necessary to:</p>
+            <ul>
+                <li>Comply with legal obligations or court orders</li>
+                <li>Protect and defend our rights or property</li>
+                <li>Prevent or investigate possible wrongdoing</li>
+                <li>Protect the safety of users or the public</li>
+                <li>Protect against legal liability</li>
+            </ul>
+
+            <h3>Business Transfers</h3>
+            <p>
+                In the event of a merger, acquisition, or sale of assets, your information may be transferred. 
+                We will provide notice before your information becomes subject to a different privacy policy.
+            </p>
+
+            <h3>Aggregated Information</h3>
+            <p>
+                We may share aggregated, anonymized information that cannot identify you personally. For example, 
+                we might publish statistics about the most searched UK locations.
+            </p>
+        </section>
+
+        <!-- Cookies & Tracking -->
+        <section id="cookies" class="privacy-section">
+            <h2>Cookies and Tracking Technologies</h2>
+            
+            <h3>What Are Cookies?</h3>
+            <p>
+                Cookies are small text files stored on your device when you visit our website. We use cookies to 
+                enhance your experience and, with your consent, to show relevant advertisements.
+            </p>
+
+            <h3>Types of Cookies We Use</h3>
+            
+            <h4>Essential Cookies (Always Active)</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Cookie Name</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>crimespotter_session</td>
+                        <td>Maintain user session</td>
+                        <td>Session</td>
+                    </tr>
+                    <tr>
+                        <td>crimespotter_cookie_consent</td>
+                        <td>Remember cookie preferences</td>
+                        <td>1 year</td>
+                    </tr>
+                    <tr>
+                        <td>crimespotter_preferences</td>
+                        <td>Store user preferences</td>
+                        <td>1 year</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Analytics Cookies (With Consent)</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Cookie Name</th>
+                        <th>Provider</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>_ga, _gid</td>
+                        <td>Google Analytics</td>
+                        <td>Track usage patterns</td>
+                        <td>2 years / 24 hours</td>
+                    </tr>
+                    <tr>
+                        <td>_gat</td>
+                        <td>Google Analytics</td>
+                        <td>Throttle request rate</td>
+                        <td>1 minute</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Advertising Cookies (With Consent)</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Cookie Name</th>
+                        <th>Provider</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>IDE, DSID</td>
+                        <td>Google AdSense</td>
+                        <td>Serve personalized ads</td>
+                        <td>1 year / 2 weeks</td>
+                    </tr>
+                    <tr>
+                        <td>NID</td>
+                        <td>Google</td>
+                        <td>Store preferences</td>
+                        <td>6 months</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Managing Cookies</h3>
+            <p>You can control cookies through:</p>
+            <ul>
+                <li><strong>Our Cookie Settings:</strong> Click the cookie icon (🍪) at the bottom left of any page</li>
+                <li><strong>Browser Settings:</strong> Most browsers allow you to refuse or delete cookies</li>
+                <li><strong>Opt-Out Tools:</strong>
+                    <ul>
+                        <li><a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-Out</a></li>
+                        <li><a href="https://www.google.com/settings/ads" target="_blank">Google Ads Settings</a></li>
+                        <li><a href="https://optout.networkadvertising.org" target="_blank">NAI Opt-Out Tool</a></li>
+                        <li><a href="https://optout.aboutads.info" target="_blank">DAA Opt-Out Tool</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="info-box warning">
+                <strong>Note:</strong> Disabling cookies may affect website functionality. Essential cookies cannot 
+                be disabled as they are necessary for the website to function properly.
+            </div>
+
+            <h3>Do Not Track Signals</h3>
+            <p>
+                We honor Do Not Track (DNT) browser signals. When DNT is enabled, we do not load analytics or 
+                advertising cookies, regardless of your cookie consent settings.
+            </p>
+        </section>
+
+        <!-- Data Security -->
+        <section id="data-security" class="privacy-section">
+            <h2>Data Security</h2>
+            
+            <p>
+                We implement appropriate technical and organizational security measures to protect your information:
+            </p>
+
+            <h3>Security Measures</h3>
+            <ul>
+                <li><strong>Encryption:</strong> All data transmission uses HTTPS/TLS encryption</li>
+                <li><strong>Access Control:</strong> Limited access to servers and data</li>
+                <li><strong>Regular Updates:</strong> Security patches and software updates</li>
+                <li><strong>Monitoring:</strong> 24/7 monitoring for security threats</li>
+                <li><strong>DDoS Protection:</strong> Cloudflare protection against attacks</li>
+                <li><strong>Data Minimization:</strong> We only collect necessary information</li>
+                <li><strong>Secure Hosting:</strong> Professional cloud hosting with security certifications</li>
+            </ul>
+
+            <h3>Data Retention</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Retention Period</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Server Logs</td>
+                        <td>90 days</td>
+                        <td>Security and debugging</td>
+                    </tr>
+                    <tr>
+                        <td>Analytics Data</td>
+                        <td>26 months</td>
+                        <td>Long-term trends analysis</td>
+                    </tr>
+                    <tr>
+                        <td>Contact Emails</td>
+                        <td>As needed</td>
+                        <td>Customer service</td>
+                    </tr>
+                    <tr>
+                        <td>Cookie Consent</td>
+                        <td>1 year</td>
+                        <td>Legal compliance</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Data Breach Response</h3>
+            <p>
+                In the unlikely event of a data breach that affects your personal information, we will:
+            </p>
+            <ol>
+                <li>Investigate and contain the breach immediately</li>
+                <li>Assess the risk to affected individuals</li>
+                <li>Notify affected users within 72 hours (if required)</li>
+                <li>Notify relevant authorities as required by law</li>
+                <li>Take steps to prevent future breaches</li>
+            </ol>
+        </section>
+
+        <!-- Your Rights -->
+        <section id="your-rights" class="privacy-section">
+            <h2>Your Privacy Rights</h2>
+            
+            <h3>Rights for UK/EU Residents (GDPR)</h3>
+            <p>
+                If you are located in the United Kingdom or European Union, you have the following rights under GDPR:
+            </p>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Right</th>
+                        <th>Description</th>
+                        <th>How to Exercise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Access</strong></td>
+                        <td>Request a copy of your personal data</td>
+                        <td>Email privacy@crimespotter-uk.com</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rectification</strong></td>
+                        <td>Correct inaccurate personal data</td>
+                        <td>Email with correction details</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Erasure</strong></td>
+                        <td>Request deletion of your personal data</td>
+                        <td>Submit deletion request</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Restriction</strong></td>
+                        <td>Limit how we process your data</td>
+                        <td>Specify processing to restrict</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Portability</strong></td>
+                        <td>Receive your data in machine-readable format</td>
+                        <td>Request data export</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Object</strong></td>
+                        <td>Object to certain processing activities</td>
+                        <td>Specify objection reason</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Withdraw Consent</strong></td>
+                        <td>Withdraw previously given consent</td>
+                        <td>Use cookie settings or email us</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>Important:</strong> Since we collect minimal data and most is anonymized, we may have 
+                limited ability to identify specific user data. We will need to verify your identity before 
+                processing any request.
+            </div>
+
+            <h3>Rights for California Residents (CCPA)</h3>
+            <p>
+                California residents have additional rights under the California Consumer Privacy Act (CCPA):
+            </p>
+            <ul>
+                <li><strong>Right to Know:</strong> Request information about data collection and sharing</li>
+                <li><strong>Right to Delete:</strong> Request deletion of personal information</li>
+                <li><strong>Right to Opt-Out:</strong> Opt-out of the sale of personal information (we don't sell data)</li>
+                <li><strong>Right to Non-Discrimination:</strong> Equal service regardless of privacy choices</li>
+            </ul>
+
+            <h3>Rights for All Users</h3>
+            <p>Regardless of location, all users can:</p>
+            <ul>
+                <li>Manage cookie preferences at any time</li>
+                <li>Opt-out of analytics and advertising</li>
+                <li>Request information about our data practices</li>
+                <li>File a complaint with relevant authorities</li>
+            </ul>
+
+            <h3>How to Exercise Your Rights</h3>
+            <p>To exercise any of these rights:</p>
+            <ol>
+                <li>Email us at <strong>privacy@crimespotter-uk.com</strong></li>
+                <li>Include "Privacy Rights Request" in the subject line</li>
+                <li>Specify which rights you want to exercise</li>
+                <li>Provide information to verify your identity</li>
+                <li>We will respond within 30 days</li>
+            </ol>
+        </section>
+
+        <!-- International Users -->
+        <section id="international" class="privacy-section">
+            <h2>International Users</h2>
+            
+            <h3>Data Transfer to the United States</h3>
+            <div class="info-box warning">
+                <strong>Important Notice:</strong> Our servers and operations are based in the United States. 
+                By using our Service from outside the US, you understand and consent that your information will 
+                be transferred to and processed in the United States.
+            </div>
+
+            <p>
+                The United States may have different data protection laws than your country. We take steps to 
+                ensure adequate protection for international data transfers:
+            </p>
+            <ul>
+                <li>Implementation of appropriate safeguards</li>
+                <li>Compliance with GDPR requirements for UK/EU users</li>
+                <li>Use of encryption for all data transfers</li>
+                <li>Contractual protections with service providers</li>
+            </ul>
+
+            <h3>Regional Compliance</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Region</th>
+                        <th>Applicable Law</th>
+                        <th>Special Provisions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>United Kingdom</strong></td>
+                        <td>UK GDPR, Data Protection Act 2018</td>
+                        <td>Full GDPR rights, ICO oversight</td>
+                    </tr>
+                    <tr>
+                        <td><strong>European Union</strong></td>
+                        <td>GDPR</td>
+                        <td>Full GDPR rights, local DPA oversight</td>
+                    </tr>
+                    <tr>
+                        <td><strong>California, USA</strong></td>
+                        <td>CCPA/CPRA</td>
+                        <td>Enhanced privacy rights for CA residents</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Other Regions</strong></td>
+                        <td>Local privacy laws</td>
+                        <td>Basic privacy protections apply</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Children's Privacy -->
+        <section id="children" class="privacy-section">
+            <h2>Children's Privacy</h2>
+            
+            <p>
+                Our Service is not directed to children, and we do not knowingly collect personal information 
+                from children under the age of 16 (or 13 in the United States).
+            </p>
+
+            <h3>Age Restrictions</h3>
+            <ul>
+                <li><strong>United States:</strong> Must be 13 or older</li>
+                <li><strong>UK/EU:</strong> Must be 16 or older</li>
+                <li><strong>Other regions:</strong> Must meet local age requirements</li>
+            </ul>
+
+            <h3>Parental Controls</h3>
+            <p>
+                If you are a parent or guardian and believe your child has provided us with personal information, 
+                please contact us immediately at <strong>privacy@crimespotter-uk.com</strong>. We will take steps to 
+                delete such information from our systems.
+            </p>
+
+            <div class="info-box">
+                <strong>Educational Use:</strong> Teachers and educators may use our Service for educational purposes 
+                under appropriate supervision. No personal information from students should be submitted.
+            </div>
+        </section>
+
+        <!-- Changes to Policy -->
+        <section id="changes" class="privacy-section">
+            <h2>Changes to This Privacy Policy</h2>
+            
+            <p>
+                We may update this Privacy Policy from time to time. When we make changes:
+            </p>
+            <ul>
+                <li>We will update the "Last Updated" date at the top</li>
+                <li>For significant changes, we will provide prominent notice on our website</li>
+                <li>If we have your email (from prior contact), we may notify you directly</li>
+                <li>Your continued use after changes constitutes acceptance</li>
+            </ul>
+
+            <h3>Version History</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Version</th>
+                        <th>Date</th>
+                        <th>Changes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.0</td>
+                        <td>January 1, 2025</td>
+                        <td>Initial privacy policy published</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                We encourage you to review this Privacy Policy periodically to stay informed about our data practices.
+            </p>
+        </section>
+
+        <!-- Contact Information -->
+        <section id="contact" class="privacy-section">
+            <h2>Contact Us</h2>
+            
+            <div class="contact-card">
+                <h3>Privacy Inquiries</h3>
+                <p>
+                    If you have questions, concerns, or requests regarding this Privacy Policy or our data practices:
+                </p>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:privacy@crimespotter-uk.com">privacy@crimespotter-uk.com</a><br>
+                    <strong>Response Time:</strong> Within 30 days<br>
+                    <strong>Subject Line:</strong> Include "Privacy Inquiry" for faster response
+                </p>
+            </div>
+
+            <div class="contact-card">
+                <h3>Data Protection Officer</h3>
+                <p>
+                    For GDPR-related inquiries or to exercise your rights:
+                </p>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:dpo@crimespotter-uk.com">dpo@crimespotter-uk.com</a><br>
+                    <strong>Role:</strong> Data Protection Officer<br>
+                    <strong>Jurisdiction:</strong> UK/EU Privacy Matters
+                </p>
+            </div>
+
+            <div class="contact-card">
+                <h3>Supervisory Authorities</h3>
+                <p>
+                    You have the right to lodge a complaint with a supervisory authority:
+                </p>
+                <p>
+                    <strong>UK Residents:</strong><br>
+                    Information Commissioner's Office (ICO)<br>
+                    Website: <a href="https://ico.org.uk" target="_blank">ico.org.uk</a><br>
+                    Phone: 0303 123 1113
+                </p>
+                <p style="margin-top: 1rem;">
+                    <strong>EU Residents:</strong><br>
+                    Contact your local Data Protection Authority<br>
+                    List: <a href="https://edpb.europa.eu/about-edpb/board/members_en" target="_blank">EDPB Members</a>
+                </p>
+            </div>
+
+            <div class="contact-card">
+                <h3>Mailing Address</h3>
+                <p>
+                    CrimeSpotter UK<br>
+                    [Your Business Name]<br>
+                    [Your Address]<br>
+                    [City, State ZIP]<br>
+                    United States
+                </p>
+                <p style="margin-top: 1rem;">
+                    <em>Note: We prefer email communication for faster response times.</em>
+                </p>
+            </div>
+        </section>
+
+        <!-- Acknowledgment -->
+        <div class="info-box" style="margin-top: 3rem; text-align: center;">
+            <p>
+                <strong>Thank you for trusting CrimeSpotter UK with your privacy.</strong><br>
+                We are committed to protecting your information and being transparent about our practices.
+            </p>
+            <p style="margin-top: 1rem;">
+                This privacy policy was last reviewed and updated on January 1, 2025.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrimeSpotter UK. All rights reserved. | 
+                   <a href="/privacy" style="color: #94a3b8;">Privacy Policy</a> | 
+                   <a href="/terms" style="color: #94a3b8;">Terms of Service</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
