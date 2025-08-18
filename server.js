@@ -45,6 +45,41 @@ app.use((req, res, next) => {
   next();
 });
 
+        
+        // City coordinates database
+const cityData = {
+            'london': { name: 'London', lat: 51.5074, lng: -0.1278, region: 'Greater London' },
+            'manchester': { name: 'Manchester', lat: 53.4808, lng: -2.2426, region: 'Greater Manchester' },
+            'birmingham': { name: 'Birmingham', lat: 52.4862, lng: -1.8904, region: 'West Midlands' },
+            'leeds': { name: 'Leeds', lat: 53.8008, lng: -1.5491, region: 'West Yorkshire' },
+            'liverpool': { name: 'Liverpool', lat: 53.4084, lng: -2.9916, region: 'Merseyside' },
+            'sheffield': { name: 'Sheffield', lat: 53.3811, lng: -1.4701, region: 'South Yorkshire' },
+            'bristol': { name: 'Bristol', lat: 51.4545, lng: -2.5879, region: 'South West' },
+            'newcastle': { name: 'Newcastle', lat: 54.9783, lng: -1.6178, region: 'Tyne and Wear' },
+            'nottingham': { name: 'Nottingham', lat: 52.9548, lng: -1.1581, region: 'East Midlands' },
+            'plymouth': { name: 'Plymouth', lat: 50.3755, lng: -4.1427, region: 'Devon' },
+            'southampton': { name: 'Southampton', lat: 50.9097, lng: -1.4044, region: 'Hampshire' },
+            'portsmouth': { name: 'Portsmouth', lat: 50.8198, lng: -1.0880, region: 'Hampshire' },
+            'leicester': { name: 'Leicester', lat: 52.6369, lng: -1.1398, region: 'Leicestershire' },
+            'coventry': { name: 'Coventry', lat: 52.4068, lng: -1.5197, region: 'West Midlands' },
+            'cardiff': { name: 'Cardiff', lat: 51.4816, lng: -3.1791, region: 'Wales' },
+            'swansea': { name: 'Swansea', lat: 51.6214, lng: -3.9436, region: 'Wales' },
+            'bradford': { name: 'Bradford', lat: 53.7960, lng: -1.7594, region: 'West Yorkshire' },
+            'brighton': { name: 'Brighton & Hove', lat: 50.8225, lng: -0.1372, region: 'East Sussex' },
+            'oxford': { name: 'Oxford', lat: 51.7520, lng: -1.2577, region: 'Oxfordshire' },
+            'cambridge': { name: 'Cambridge', lat: 52.2053, lng: 0.1218, region: 'Cambridgeshire' },
+            'exeter': { name: 'Exeter', lat: 50.7256, lng: -3.5269, region: 'Devon' },
+            'york': { name: 'York', lat: 53.9600, lng: -1.0873, region: 'North Yorkshire' },
+            'bath': { name: 'Bath', lat: 51.3811, lng: -2.3590, region: 'Somerset' },
+            'norwich': { name: 'Norwich', lat: 52.6309, lng: 1.2974, region: 'Norfolk' },
+            'reading': { name: 'Reading', lat: 51.4543, lng: -0.9781, region: 'Berkshire' },
+            'derby': { name: 'Derby', lat: 52.9226, lng: -1.4746, region: 'Derbyshire' },
+            'stoke': { name: 'Stoke-on-Trent', lat: 53.0027, lng: -2.1794, region: 'Staffordshire' },
+            'wolverhampton': { name: 'Wolverhampton', lat: 52.5865, lng: -2.1288, region: 'West Midlands' },
+            'milton-keynes': { name: 'Milton Keynes', lat: 52.0406, lng: -0.7594, region: 'Buckinghamshire' },
+            'newport': { name: 'Newport', lat: 51.5842, lng: -2.9977, region: 'Wales' }
+        };
+const citySlugs = Object.keys(cityData);
 /**
  * Get available dates from UK Police API with caching
  */
@@ -190,43 +225,10 @@ app.get('/cities', (req, res) => {
 app.get('/city/:cityname', async (req, res) => {
     try {
         const cityName = req.params.cityname.toLowerCase();
-        
-        // City coordinates database
-        const cityData = {
-            'london': { name: 'London', lat: 51.5074, lng: -0.1278, region: 'Greater London' },
-            'manchester': { name: 'Manchester', lat: 53.4808, lng: -2.2426, region: 'Greater Manchester' },
-            'birmingham': { name: 'Birmingham', lat: 52.4862, lng: -1.8904, region: 'West Midlands' },
-            'leeds': { name: 'Leeds', lat: 53.8008, lng: -1.5491, region: 'West Yorkshire' },
-            'liverpool': { name: 'Liverpool', lat: 53.4084, lng: -2.9916, region: 'Merseyside' },
-            'sheffield': { name: 'Sheffield', lat: 53.3811, lng: -1.4701, region: 'South Yorkshire' },
-            'bristol': { name: 'Bristol', lat: 51.4545, lng: -2.5879, region: 'South West' },
-            'newcastle': { name: 'Newcastle', lat: 54.9783, lng: -1.6178, region: 'Tyne and Wear' },
-            'nottingham': { name: 'Nottingham', lat: 52.9548, lng: -1.1581, region: 'East Midlands' },
-            'plymouth': { name: 'Plymouth', lat: 50.3755, lng: -4.1427, region: 'Devon' },
-            'southampton': { name: 'Southampton', lat: 50.9097, lng: -1.4044, region: 'Hampshire' },
-            'portsmouth': { name: 'Portsmouth', lat: 50.8198, lng: -1.0880, region: 'Hampshire' },
-            'leicester': { name: 'Leicester', lat: 52.6369, lng: -1.1398, region: 'Leicestershire' },
-            'coventry': { name: 'Coventry', lat: 52.4068, lng: -1.5197, region: 'West Midlands' },
-            'cardiff': { name: 'Cardiff', lat: 51.4816, lng: -3.1791, region: 'Wales' },
-            'swansea': { name: 'Swansea', lat: 51.6214, lng: -3.9436, region: 'Wales' },
-            'bradford': { name: 'Bradford', lat: 53.7960, lng: -1.7594, region: 'West Yorkshire' },
-            'brighton': { name: 'Brighton & Hove', lat: 50.8225, lng: -0.1372, region: 'East Sussex' },
-            'oxford': { name: 'Oxford', lat: 51.7520, lng: -1.2577, region: 'Oxfordshire' },
-            'cambridge': { name: 'Cambridge', lat: 52.2053, lng: 0.1218, region: 'Cambridgeshire' },
-            'exeter': { name: 'Exeter', lat: 50.7256, lng: -3.5269, region: 'Devon' },
-            'york': { name: 'York', lat: 53.9600, lng: -1.0873, region: 'North Yorkshire' },
-            'bath': { name: 'Bath', lat: 51.3811, lng: -2.3590, region: 'Somerset' },
-            'norwich': { name: 'Norwich', lat: 52.6309, lng: 1.2974, region: 'Norfolk' },
-            'reading': { name: 'Reading', lat: 51.4543, lng: -0.9781, region: 'Berkshire' },
-            'derby': { name: 'Derby', lat: 52.9226, lng: -1.4746, region: 'Derbyshire' },
-            'stoke': { name: 'Stoke-on-Trent', lat: 53.0027, lng: -2.1794, region: 'Staffordshire' },
-            'wolverhampton': { name: 'Wolverhampton', lat: 52.5865, lng: -2.1288, region: 'West Midlands' },
-            'milton-keynes': { name: 'Milton Keynes', lat: 52.0406, lng: -0.7594, region: 'Buckinghamshire' },
-            'newport': { name: 'Newport', lat: 51.5842, lng: -2.9977, region: 'Wales' }
-        };
+        const slug = (req.params.cityname || '').toLowerCase();
         
         // Get city data or return 404
-        const city = cityData[cityName];
+        const city = cityData[slug];
         if (!city) {
             return res.status(404).render('error', { 
                 error: 'City not found',
@@ -578,6 +580,76 @@ process.on('SIGTERM', () => {
 process.on('SIGINT', () => {
     console.log('SIGINT received, shutting down gracefully');
     process.exit(0);
+});
+
+// ---- Sitemap (XML) ----
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const base = `${req.protocol}://${req.get('host')}`;
+
+    // Static pages you have
+    const staticPaths = ['/', '/cities', '/about', '/contact', '/privacy', '/terms'];
+
+    // Use latest available month as lastmod for city pages, else today
+    let latest = null;
+    try { latest = await getAvailableDates(); } catch {}
+    const isoToday = new Date().toISOString().split('T')[0];
+    const lastmodCity = latest ? `${latest}-01` : isoToday;
+
+    // Build URL entries
+    const urls = [
+      // static
+      ...staticPaths.map(p => ({
+        loc: `${base}${p}`, lastmod: isoToday, changefreq: 'weekly', priority: p === '/' ? '1.0' : '0.8'
+      })),
+      // dynamic city pages
+      ...citySlugs.map(slug => ({
+        loc: `${base}/city/${slug}`, lastmod: lastmodCity, changefreq: 'weekly', priority: '0.7'
+      }))
+    ];
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url>
+    <loc>${u.loc}</loc>
+    <lastmod>${u.lastmod}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+    res.set('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (err) {
+    console.error('sitemap error', err);
+    res.status(500).type('application/xml').send('<?xml version="1.0"?><error/>');
+  }
+});
+// ---- Robots ----
+app.get('/robots.txt', (req, res) => {
+  const base = `${req.protocol}://${req.get('host')}`;
+  res.type('text/plain').send(
+`User-agent: *
+Allow: /
+
+Sitemap: ${base}/sitemap.xml
+`);
+});
+
+// ⬇️ put these LAST, after all routes (including sitemap/robots)
+app.use((req, res) => {
+  res.status(404).render('error', { 
+    error: 'Page not found',
+    title: '404 - CrimeSpotter UK'
+  });
+});
+
+app.use((error, req, res, next) => {
+  console.error('Unhandled error:', error);
+  res.status(500).render('error', { 
+    error: 'Internal server error',
+    title: 'Error - CrimeSpotter UK'
+  });
 });
 
 // Start server
