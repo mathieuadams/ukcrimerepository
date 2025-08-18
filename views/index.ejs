@@ -1,9 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Real-time UK crime data mapping. Find crime statistics, safety information, and trends by location across England, Wales, and Northern Ireland.">
+        <!-- Canonical & language -->
+    <link rel="canonical" href="<%= baseUrl %>/">
+    <meta property="og:url" content="<%= baseUrl %>/">
+
+    <link rel="alternate" hreflang="en-gb" href="https://www.crimespotter.co.uk/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CrimeSpotter UK">
+    <meta property="og:title" content="Live UK Crime Data at Your Fingertips | CrimeSpotter UK">
+    <meta property="og:description" content="Explore real-time crime statistics, safety trends, and neighbourhood insights across England, Wales, and Northern Ireland.">
+    <meta property="og:url" content="https://www.crimespotter.co.uk/">
+    <meta property="og:image" content="https://www.crimespotter.co.uk/img/og-home.jpg">
+    <meta property="og:image:alt" content="UK crime map and trends">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Live UK Crime Data at Your Fingertips | CrimeSpotter UK">
+    <meta name="twitter:description" content="Explore real-time crime statistics, safety trends, and neighbourhood insights across the UK.">
+    <meta name="twitter:image" content="https://www.crimespotter.co.uk/img/og-home.jpg">
+
+    <!-- Sitemap hint -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
     <title><%= title %></title>
     
     <!-- Preconnect for performance -->
@@ -21,8 +44,38 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preload" href="/css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/css/styles.css"></noscript>
+
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "CrimeSpotter UK",
+            "url": "<%= baseUrl %>/",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://www.crimespotter.co.uk/cities?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+                }
+        }
+        </script>
+
+        <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Popular city crime maps",
+        "itemListElement": [
+                { "@type": "ListItem", "position": 1, "url": "https://www.crimespotter.co.uk/city/london", "name": "London crime map" },
+                { "@type": "ListItem", "position": 2, "url": "https://www.crimespotter.co.uk/city/manchester", "name": "Manchester crime map" },
+                { "@type": "ListItem", "position": 3, "url": "https://www.crimespotter.co.uk/city/birmingham", "name": "Birmingham crime map" },
+                { "@type": "ListItem", "position": 4, "url": "https://www.crimespotter.co.uk/city/leeds", "name": "Leeds crime map" }
+            ]
+        }
+        </script>
+
 </head>
 <body>
     <!-- Loading Screen -->
@@ -49,20 +102,29 @@
                 <p class="hero-subtitle">
                     Explore real-time crime statistics, safety trends, and neighborhood insights across England, Wales, and Northern Ireland
                 </p>
+                <p class="hero-meta" style="margin-top:.5rem;color:#64748b;">
+                     Latest month available: <strong><%= recentDate %></strong> (data from UK Police API)
+                </p>
+
                 
                 <!-- Search Bar -->
                 <div class="search-section">
                     <div class="search-bar">
                         <div class="search-input-wrapper">
                             <i class="fas fa-map-marker-alt search-icon"></i>
-                            <input type="text" 
-                                   id="location-search" 
-                                   placeholder="Enter postcode, city, or address..." 
-                                   class="search-input"
-                                   autocomplete="off">
-                            <div class="search-suggestions" id="search-suggestions"></div>
+                            <input
+                                type="text"
+                                id="location-search"
+                                placeholder="Enter postcode, city, or address..."
+                                class="search-input"
+                                autocomplete="off"
+                                aria-label="Search by postcode, city, or address"
+                                aria-autocomplete="list"
+                                aria-controls="search-suggestions"
+                                aria-expanded="false">
+                            <div id="search-suggestions" class="search-suggestions" role="listbox" aria-label="Search suggestions"></div>
                         </div>
-                        <button class="search-btn" id="search-btn">
+                        <button class="search-btn" id="search-btn" aria-label="Search">
                             <i class="fas fa-search"></i>
                             <span>Search</span>
                         </button>
@@ -86,6 +148,22 @@
                             </button>
                         </div>
                     </div>
+                    <!-- Crawlable internal links (SEO) -->
+                    <nav class="quick-links" aria-label="Popular city crime maps" style="margin-top:1rem;">
+                        <a href="/city/london">London crime map</a> ·
+                        <a href="/city/manchester">Manchester crime map</a> ·
+                        <a href="/city/birmingham">Birmingham crime map</a> ·
+                        <a href="/city/leeds">Leeds crime map</a>
+                    </nav>
+
+                    <noscript>
+                        <ul class="quick-links-noscript">
+                            <li><a href="/city/london">London crime map</a></li>
+                            <li><a href="/city/manchester">Manchester crime map</a></li>
+                            <li><a href="/city/birmingham">Birmingham crime map</a></li>
+                            <li><a href="/city/leeds">Leeds crime map</a></li>
+                        </ul>
+                    </noscript>
                     
                     <!-- Crime Statistics - Moved below quick buttons -->
                     <div class="crime-stats-row" style="margin-top: 2rem; display: flex; justify-content: center; gap: 2rem;">
@@ -203,8 +281,11 @@
                 </div>
 
                 <!-- Main Map Container -->
+                 <p class="sr-only" id="map-desc">
+                        Interactive UK crime map showing incidents by category and month.
+                </p>
                 <div class="map-container">
-                    <div id="crime-map" class="crime-map"></div>
+                    <div id="crime-map" class="crime-map" role="region" aria-labelledby="map-desc"></div>
                     
                     <!-- Map Loading Overlay -->
                     <div class="map-loading" id="map-loading" style="display: none;">

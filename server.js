@@ -40,6 +40,7 @@ app.use((req, res, next) => {
 
   res.locals.page = page;
   res.locals.year = new Date().getFullYear();
+  res.locals.baseUrl = `${req.protocol}://${req.get('host')}`;
   next();
 });
 
