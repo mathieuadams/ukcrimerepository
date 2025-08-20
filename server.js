@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 // If you're behind a proxy/CDN (Render/Heroku/Nginx), this makes req.protocol honor X-Forwarded-Proto
 app.set('trust proxy', 1);
-res.set('Cache-Control', 'public, max-age=3600'); // before res.send(...)
+
 // -------------------- Middleware --------------------
 app.use(helmet({
   contentSecurityPolicy: false, // allow inline scripts/styles while developing
@@ -23,28 +23,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 👇 Add this here (before you define any /api or /health routes)
-app.use(['/api', '/health'], (req, res, next) => {
-  res.set('X-Robots-Tag', 'noindex');
-  next();
-});
-
 // Static + views
-//app.use(express.static('public'));
-const oneYear = 31536000;
-
-app.use(express.static('public', {
-  setHeaders: (res, filePath) => {
-    if (/\.(css|js|png|jpe?g|webp|svg|ico|woff2?)$/i.test(filePath)) {
-      res.setHeader('Cache-Control', `public, max-age=${oneYear}, immutable`);
-    } else {
-      // e.g., HTML or misc
-      res.setHeader('Cache-Control', 'public, max-age=300');
-    }
-  }
-}));
-
-
+app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 

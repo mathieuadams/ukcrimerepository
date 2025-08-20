@@ -1,97 +1,195 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Browse UK Cities — CrimeSpotter UK</title>
-  <meta name="description" content="Browse UK crime maps by city. View live police data, categories and trends for major cities across England, Wales and Northern Ireland.">
-  <link rel="canonical" href="<%= baseUrl %>/cities">
-  <link rel="alternate" hreflang="en-gb" href="<%= baseUrl %>/cities">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css">
-
-  <style>
-    .browse-container{max-width:1200px;margin:0 auto;padding:3rem 2rem}
-    .browse-header{text-align:center;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid #e2e8f0}
-    .browse-header h1{font-size:2rem;color:#1e293b;font-weight:700;margin:0 0 .5rem}
-    .browse-subtitle{color:#64748b}
-    .section-title{font-size:1.25rem;color:#1e293b;font-weight:600;margin:2rem 0 1rem;padding-bottom:.5rem;border-bottom:2px solid #3b82f6}
-    .cities-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem 2rem;list-style:none;padding:0;margin:0}
-    .cities-grid li{margin:0}
-    .city-link{display:block;color:#475569;text-decoration:none;padding:.5rem 0;transition:color .2s}
-    .city-link:hover{color:#3b82f6;text-decoration:underline}
-    .popular-badge{display:inline-block;background:#fef3c7;color:#92400e;font-size:.75rem;padding:.125rem .5rem;border-radius:12px;margin-left:.5rem;font-weight:500}
-    @media (max-width:1024px){.cities-grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:768px){.cities-grid{grid-template-columns:1fr}}
-  </style>
-
-  <!-- Breadcrumbs + ItemList (top 24) -->
-  <script type="application/ld+json">
-  <%- JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type":"ListItem","position":1,"name":"Home","item":`${baseUrl}/` },
-      { "@type":"ListItem","position":2,"name":"Browse by City","item":`${baseUrl}/cities` }
-    ]
-  }) %>
-  </script>
-  <script type="application/ld+json">
-  <%
-    const allEntries = Object.entries(cities);
-    const top = allEntries.slice(0, 24).map(([slug, c], i) => ({
-      "@type":"ListItem",
-      "position": i+1,
-      "name": `${c.name} crime map`,
-      "url": `${baseUrl}/city/${slug}`
-    }));
-  %>
-  <%- JSON.stringify({
-    "@context":"https://schema.org",
-    "@type":"ItemList",
-    "name":"UK city crime maps",
-    "itemListElement": top
-  }) %>
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse by City - CrimeSpotter UK</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🚨</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .browse-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .browse-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .browse-header h1 {
+            font-size: 2rem;
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .browse-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        .cities-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem 3rem;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        
+        .city-link {
+            color: #475569;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+            display: block;
+            padding: 0.5rem 0;
+        }
+        
+        .city-link:hover {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        
+        .featured-cities {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #3b82f6;
+        }
+        
+        .popular-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.5rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .cities-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .cities-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
-  <%- include('partials/header') %>
+<%- include('partials/header') %>
 
-  <main class="browse-container">
-    <header class="browse-header">
-      <h1>Browse By City</h1>
-      <p class="browse-subtitle">Choose a city to view detailed crime statistics, categories and 9-month trends.</p>
-    </header>
+    <!-- Main Content -->
+    <div class="browse-container">
+        <div class="browse-header">
+            <h1>Browse By City</h1>
+            <p class="browse-subtitle">Select a city to view detailed crime statistics and trends</p>
+        </div>
 
-    <% const featuredSlugs = ['london','manchester','birmingham','leeds','liverpool','sheffield','bristol','newcastle','nottingham','cardiff']; %>
-    <% const featured = featuredSlugs.filter(s => cities[s]); %>
+        <!-- Featured Cities -->
+        <div class="featured-cities">
+            <h2 class="section-title">Major Cities</h2>
+            <div class="cities-list">
+                <a href="/city/london" class="city-link">
+                    London
+                    <span class="popular-badge">Capital</span>
+                </a>
+                <a href="/city/manchester" class="city-link">Manchester</a>
+                <a href="/city/birmingham" class="city-link">Birmingham</a>
+                <a href="/city/leeds" class="city-link">Leeds</a>
+                <a href="/city/liverpool" class="city-link">Liverpool</a>
+                <a href="/city/sheffield" class="city-link">Sheffield</a>
+                <a href="/city/bristol" class="city-link">Bristol</a>
+                <a href="/city/newcastle" class="city-link">Newcastle</a>
+                <a href="/city/nottingham" class="city-link">Nottingham</a>
+            </div>
+        </div>
 
-    <section aria-labelledby="major-cities">
-      <h2 id="major-cities" class="section-title">Major Cities</h2>
-      <ul class="cities-grid">
-        <% featured.forEach(slug => { const c = cities[slug]; %>
-          <li>
-            <a class="city-link" href="/city/<%= slug %>"><%= c.name %> crime map
-              <% if (slug === 'london') { %><span class="popular-badge">Capital</span><% } %>
-            </a>
-          </li>
-        <% }) %>
-      </ul>
-    </section>
+        <!-- All Cities -->
+        <div class="all-cities">
+            <h2 class="section-title">All Cities (England & Wales)</h2>
+            <div class="cities-list">
+                <a href="/city/bath" class="city-link">Bath</a>
+                <a href="/city/birmingham" class="city-link">Birmingham</a>
+                <a href="/city/blackpool" class="city-link">Blackpool</a>
+                <a href="/city/bolton" class="city-link">Bolton</a>
+                <a href="/city/bournemouth" class="city-link">Bournemouth</a>
+                <a href="/city/bradford" class="city-link">Bradford</a>
+                <a href="/city/brighton" class="city-link">Brighton & Hove</a>
+                <a href="/city/bristol" class="city-link">Bristol</a>
+                <a href="/city/cambridge" class="city-link">Cambridge</a>
+                <a href="/city/canterbury" class="city-link">Canterbury</a>
+                <a href="/city/cardiff" class="city-link">Cardiff</a>
+                <a href="/city/carlisle" class="city-link">Carlisle</a>
+                <a href="/city/chelmsford" class="city-link">Chelmsford</a>
+                <a href="/city/chester" class="city-link">Chester</a>
+                <a href="/city/chichester" class="city-link">Chichester</a>
+                <a href="/city/coventry" class="city-link">Coventry</a>
+                <a href="/city/derby" class="city-link">Derby</a>
+                <a href="/city/doncaster" class="city-link">Doncaster</a>
+                <a href="/city/durham" class="city-link">Durham</a>
+                <a href="/city/exeter" class="city-link">Exeter</a>
+                <a href="/city/gloucester" class="city-link">Gloucester</a>
+                <a href="/city/hereford" class="city-link">Hereford</a>
+                <a href="/city/hull" class="city-link">Kingston upon Hull</a>
+                <a href="/city/lancaster" class="city-link">Lancaster</a>
+                <a href="/city/leeds" class="city-link">Leeds</a>
+                <a href="/city/leicester" class="city-link">Leicester</a>
+                <a href="/city/lichfield" class="city-link">Lichfield</a>
+                <a href="/city/lincoln" class="city-link">Lincoln</a>
+                <a href="/city/liverpool" class="city-link">Liverpool</a>
+                <a href="/city/london" class="city-link">London</a>
+                <a href="/city/manchester" class="city-link">Manchester</a>
+                <a href="/city/milton-keynes" class="city-link">Milton Keynes</a>
+                <a href="/city/newcastle" class="city-link">Newcastle upon Tyne</a>
+                <a href="/city/newport" class="city-link">Newport</a>
+                <a href="/city/norwich" class="city-link">Norwich</a>
+                <a href="/city/nottingham" class="city-link">Nottingham</a>
+                <a href="/city/oxford" class="city-link">Oxford</a>
+                <a href="/city/peterborough" class="city-link">Peterborough</a>
+                <a href="/city/plymouth" class="city-link">Plymouth</a>
+                <a href="/city/portsmouth" class="city-link">Portsmouth</a>
+                <a href="/city/preston" class="city-link">Preston</a>
+                <a href="/city/reading" class="city-link">Reading</a>
+                <a href="/city/ripon" class="city-link">Ripon</a>
+                <a href="/city/salford" class="city-link">Salford</a>
+                <a href="/city/salisbury" class="city-link">Salisbury</a>
+                <a href="/city/sheffield" class="city-link">Sheffield</a>
+                <a href="/city/southampton" class="city-link">Southampton</a>
+                <a href="/city/st-albans" class="city-link">St Albans</a>
+                <a href="/city/stoke" class="city-link">Stoke-on-Trent</a>
+                <a href="/city/sunderland" class="city-link">Sunderland</a>
+                <a href="/city/swansea" class="city-link">Swansea</a>
+                <a href="/city/truro" class="city-link">Truro</a>
+                <a href="/city/wakefield" class="city-link">Wakefield</a>
+                <a href="/city/wells" class="city-link">Wells</a>
+                <a href="/city/westminster" class="city-link">Westminster</a>
+                <a href="/city/winchester" class="city-link">Winchester</a>
+                <a href="/city/wolverhampton" class="city-link">Wolverhampton</a>
+                <a href="/city/worcester" class="city-link">Worcester</a>
+                <a href="/city/york" class="city-link">York</a>
+            </div>
+        </div>
+    </div>
 
-    <section aria-labelledby="all-cities">
-      <h2 id="all-cities" class="section-title">All Supported Cities</h2>
-      <ul class="cities-grid">
-        <% Object.entries(cities).forEach(([slug, c]) => { %>
-          <li><a class="city-link" href="/city/<%= slug %>"><%= c.name %> crime map</a></li>
-        <% }) %>
-      </ul>
-    </section>
-  </main>
-
-  <%- include('partials/footer') %>
+<%- include('partials/footer') %>
 </body>
 </html>
