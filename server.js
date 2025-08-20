@@ -340,12 +340,15 @@ app.post('/api/contact', async (req, res) => {
 });
 
 // -------------------- Sitemap & Robots --------------------
+// -------------------- Sitemap --------------------
 app.get('/sitemap.xml', async (req, res) => {
   try {
-    const base = `${req.protocol}://${req.get('host')}`;
+    // Always build absolute URLs from your canonical host (recommended)
+    const canonicalHost = process.env.CANONICAL_HOST || req.get('host'); // e.g. 'www.crimespotter.co.uk'
+    const base = `https://${canonicalHost}`;
+
     const staticPaths = ['/', '/cities', '/about', '/contact', '/privacy', '/terms'];
 
-    // Use latest available month as lastmod for city pages, else today
     let latest = null;
     try { latest = await getAvailableDates(); } catch {}
     const isoToday = new Date().toISOString().split('T')[0];
@@ -360,7 +363,8 @@ app.get('/sitemap.xml', async (req, res) => {
       }))
     ];
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    const xml =
+`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(u => `  <url>
     <loc>${u.loc}</loc>
@@ -370,7 +374,11 @@ ${urls.map(u => `  <url>
   </url>`).join('\n')}
 </urlset>`;
 
-    res.type('application/xml').send(xml);
+    res
+      .status(200)
+      .set('Content-Type', 'application/xml; charset=utf-8')
+      .set('Cache-Control', 'public, max-age=3600')
+      .send(xml);
   } catch (err) {
     console.error('sitemap error', err);
     res.status(500).type('application/xml').send('<?xml version="1.0"?><error/>');
