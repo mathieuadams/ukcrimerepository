@@ -17,6 +17,26 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Place",
+      "name": "<%= cityName %> Crime Map",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "<%= cityName %>",
+        "addressRegion": "<%= cityRegion %>",
+        "addressCountry": "GB"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": <%= cityLat %>,
+        "longitude": <%= cityLng %>
+      },
+      "url": "<%= baseUrl %>/city/<%= cityName.toLowerCase().replace(/\s+/g,'-') %>"
+    }
+    </script>
+
 
   <style>
     .city-header-section {
