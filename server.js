@@ -386,14 +386,18 @@ ${urls.map(u => `  <url>
 });
 
 app.get('/robots.txt', (req, res) => {
-  const base = `${req.protocol}://${req.get('host')}`;
-  res.type('text/plain').send(
+  res
+    .type('text/plain')
+    .set('Cache-Control', 'public, max-age=3600')
+    .send(
 `User-agent: *
 Allow: /
 
-Sitemap: ${base}/sitemap.xml
+Sitemap: https://www.crimespotter.co.uk/sitemap.xml
+Sitemap: https://crimespotter.co.uk/sitemap.xml
 `);
 });
+
 
 // -------------------- Error Handlers (MUST BE LAST) --------------------
 app.use((req, res) => {
