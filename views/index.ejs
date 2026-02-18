@@ -43,6 +43,9 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <% if (adConfig.client) { %>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adConfig.client %>" crossorigin="anonymous"></script>
+    <% } %>
     
     <link rel="preload" href="/css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/css/styles.css"></noscript>
@@ -112,7 +115,7 @@
                 <p class="hero-subtitle">
                     Explore real-time crime statistics, safety trends, and neighborhood insights across England, Wales, and Northern Ireland
                 </p>
-                <p class="hero-meta" style="margin-top:.5rem;color:#64748b;">
+                <p class="hero-meta">
                      Latest month available: <strong><%= recentDate %></strong> (data from UK Police API)
                 </p>
 
@@ -159,7 +162,7 @@
                         </div>
                     </div>
                     <!-- Crawlable internal links (SEO) -->
-                    <nav class="quick-links" aria-label="Popular city crime maps" style="margin-top:1rem;">
+                    <nav class="quick-links" aria-label="Popular city crime maps">
                         <a href="/city/london">London crime map</a> ·
                         <a href="/city/manchester">Manchester crime map</a> ·
                         <a href="/city/birmingham">Birmingham crime map</a> ·
@@ -176,22 +179,20 @@
                     </noscript>
                     
                     <!-- Crime Statistics - Moved below quick buttons -->
-                    <div class="crime-stats-row" style="margin-top: 2rem; display: flex; justify-content: center; gap: 2rem;">
-                        <div class="stat-card" style="background: white; padding: 1.5rem 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; min-width: 150px;">
-                            <div class="stat-number" id="total-crimes" style="font-size: 2rem; font-weight: 700; color: #667eea;">Loading...</div>
-                            <div class="stat-label" style="color: #64748b; margin-top: 0.5rem;">Crimes This Month</div>
+                    <div class="crime-stats-row">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-crimes">Loading...</div>
+                            <div class="stat-label">Crimes This Month</div>
                         </div>
-                        <div class="stat-card" style="background: white; padding: 1.5rem 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; min-width: 150px;">
-                            <div class="stat-number" style="font-size: 2rem; font-weight: 700; color: #667eea;"><%= recentDate %></div>
-                            <div class="stat-label" style="color: #64748b; margin-top: 0.5rem;">Latest Data</div>
+                        <div class="stat-card">
+                            <div class="stat-number"><%= recentDate %></div>
+                            <div class="stat-label">Latest Data</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-<!-- Replace the AdSense Banner section in your index.ejs with this responsive version -->
 
 <!-- AdSense Banner -->
 <section class="ad-section">
@@ -200,23 +201,22 @@
             <div class="ad-placeholder">
                 <div class="ad-label">Advertisement</div>
                 <div class="ad-content">
-                    <!-- Responsive Ad Container -->
-                    <div class="ad-banner-responsive">
-                        <span class="ad-text">Ad Space</span>
-                    </div>
-                    
-                    <!-- If you're using Google AdSense, replace the above with: -->
-                    <!-- 
-                    <ins class="adsbygoogle"
+                    <% if (adConfig.homeSlot) { %>
+                    <ins class="adsbygoogle ad-banner-responsive"
                          style="display:block"
-                         data-ad-client="ca-pub-XXXXXXXXXX"
-                         data-ad-slot="XXXXXXXXXX"
+                         data-ad-client="<%= adConfig.client %>"
+                         data-ad-slot="<%= adConfig.homeSlot %>"
                          data-ad-format="auto"
                          data-full-width-responsive="true"></ins>
                     <script>
                          (adsbygoogle = window.adsbygoogle || []).push({});
                     </script>
-                    -->
+                    <% } else { %>
+                    <div class="ad-banner-responsive ad-banner-placeholder">
+                        <span class="ad-text">Ad Space 970 x 90 (responsive)</span>
+                        <small>Set ADSENSE_HOME_SLOT to enable this live ad.</small>
+                    </div>
+                    <% } %>
                 </div>
             </div>
         </div>

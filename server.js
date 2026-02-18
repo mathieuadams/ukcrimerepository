@@ -8,6 +8,8 @@ const compression = require('compression');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ADSENSE_CLIENT = (process.env.ADSENSE_CLIENT || 'ca-pub-3968743526469768').trim();
+const ADSENSE_HOME_SLOT = (process.env.ADSENSE_HOME_SLOT || '').trim();
 
 
 
@@ -142,7 +144,14 @@ function processCrimeCategories(crimes) {
 app.get('/', async (req, res) => {
   try {
     const recentDate = await getAvailableDates();
-    res.render('index', { title: 'CrimeSpotter UK - Live Crime Data Mapping', recentDate });
+    res.render('index', {
+      title: 'CrimeSpotter UK - Live Crime Data Mapping',
+      recentDate,
+      adConfig: {
+        client: ADSENSE_CLIENT,
+        homeSlot: ADSENSE_HOME_SLOT
+      }
+    });
   } catch (err) {
     console.error('Home render error:', err);
     res.status(500).render('error', { title: 'Error - CrimeSpotter UK', error: 'Unable to load page' });

@@ -287,6 +287,14 @@ a:hover {
     overflow: hidden;
 }
 
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.28) 0%, rgba(15, 23, 42, 0.18) 100%);
+    z-index: 1;
+}
+
 .hero-content {
     position: relative;
     z-index: 2;
@@ -300,10 +308,12 @@ a:hover {
     font-weight: 700;
     line-height: 1.1;
     margin-bottom: var(--spacing-lg);
+    color: var(--white);
+    text-shadow: 0 2px 16px rgba(15, 23, 42, 0.35);
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, #fde68a 0%, #fbbf24 45%, #f59e0b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -311,9 +321,21 @@ a:hover {
 
 .hero-subtitle {
     font-size: 1.25rem;
-    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.96);
     margin-bottom: var(--spacing-2xl);
     line-height: 1.6;
+    text-shadow: 0 1px 10px rgba(15, 23, 42, 0.3);
+}
+
+.hero-meta {
+    margin-top: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.hero-meta strong {
+    color: var(--white);
 }
 
 /* ============================================
@@ -326,9 +348,9 @@ a:hover {
 
 .search-bar {
     display: flex;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: var(--radius-xl);
     padding: var(--spacing-sm);
     gap: var(--spacing-sm);
@@ -336,10 +358,10 @@ a:hover {
 }
 
 .search-bar:focus-within {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.55);
     transform: translateY(-2px);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.22);
 }
 
 .search-input-wrapper {
@@ -354,13 +376,18 @@ a:hover {
     background: none;
     border: none;
     outline: none;
-    color: white;
+    color: var(--white);
     font-size: 1rem;
     padding: var(--spacing-md) 0;
 }
 
 .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.search-icon {
+    color: rgba(255, 255, 255, 0.9);
+    margin-right: var(--spacing-sm);
 }
 
 .search-btn {
@@ -389,6 +416,13 @@ a:hover {
     text-align: center;
 }
 
+.quick-label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+}
+
 .quick-buttons {
     display: flex;
     gap: var(--spacing-md);
@@ -397,8 +431,8 @@ a:hover {
 }
 
 .quick-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius-lg);
@@ -408,8 +442,112 @@ a:hover {
 }
 
 .quick-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.24);
     transform: translateY(-2px);
+}
+
+.quick-links {
+    margin-top: var(--spacing-md);
+    color: rgba(255, 255, 255, 0.88);
+    font-weight: 500;
+}
+
+.quick-links a {
+    color: rgba(255, 255, 255, 0.96);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.quick-links a:hover {
+    color: #fef3c7;
+}
+
+.quick-links-noscript {
+    list-style: none;
+    margin-top: var(--spacing-md);
+}
+
+.quick-links-noscript a {
+    color: rgba(255, 255, 255, 0.96);
+    text-decoration: underline;
+}
+
+.crime-stats-row {
+    margin-top: var(--spacing-xl);
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+}
+
+.hero .crime-stats-row .stat-card {
+    min-width: 170px;
+    padding: 1.25rem 1.75rem;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+}
+
+.hero .crime-stats-row .stat-number {
+    color: #4338ca;
+    margin-bottom: 0;
+}
+
+.hero .crime-stats-row .stat-label {
+    color: var(--gray-700);
+    margin-top: 0.5rem;
+}
+
+.ad-section {
+    padding: var(--spacing-xl) 0 var(--spacing-2xl);
+    background: var(--gray-50);
+}
+
+.ad-container {
+    max-width: 1024px;
+    margin: 0 auto;
+}
+
+.ad-placeholder {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-lg);
+}
+
+.ad-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: var(--spacing-sm);
+}
+
+.ad-banner-responsive {
+    width: 100%;
+    min-height: 90px;
+}
+
+.ad-banner-placeholder {
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: var(--spacing-lg);
+    text-align: center;
+}
+
+.ad-text {
+    color: var(--gray-700);
+    font-weight: 700;
+}
+
+.ad-banner-placeholder small {
+    color: var(--gray-500);
 }
 
 /* ============================================
@@ -1016,6 +1154,15 @@ a:hover {
         width: 100%;
         justify-content: center;
     }
+
+    .crime-stats-row {
+        gap: var(--spacing-md);
+    }
+
+    .hero .crime-stats-row .stat-card {
+        min-width: 140px;
+        width: calc(50% - 0.5rem);
+    }
     
     /* Quick Buttons */
     .quick-buttons {
@@ -1088,6 +1235,10 @@ a:hover {
     /* Contact */
     .contact-form-section {
         padding: 1.5rem;
+    }
+
+    .ad-placeholder {
+        padding: var(--spacing-md);
     }
     
     .form-row {
