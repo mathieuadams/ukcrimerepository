@@ -79,6 +79,9 @@
         }
         </script>
 
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3968743526469768"
+     crossorigin="anonymous"></script>
+
 </head>
 
       <!-- Google tag (gtag.js) -->
@@ -188,34 +191,7 @@
         </div>
     </section>
 
-<!-- AdSense Banner -->
-<section class="ad-section">
-    <div class="container">
-        <div class="ad-container">
-            <div class="ad-placeholder">
-                <div class="ad-label">Advertisement</div>
-                <div class="ad-content">
-                    <% if (adConfig.homeSlot) { %>
-                    <ins class="adsbygoogle ad-banner-responsive"
-                         style="display:block"
-                         data-ad-client="<%= adConfig.client %>"
-                         data-ad-slot="<%= adConfig.homeSlot %>"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>
-                         (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                    <% } else { %>
-                    <div class="ad-banner-responsive ad-banner-placeholder">
-                        <span class="ad-text">Ad Space 970 x 90 (responsive)</span>
-                        <small>Set ADSENSE_HOME_SLOT to enable this live ad.</small>
-                    </div>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 
     <!-- Main Map Section -->
     <main class="main-content">
